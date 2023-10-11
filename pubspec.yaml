@@ -1,0 +1,50 @@
+name: test_chart
+description: A new Flutter project.
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.19.6 <3.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+
+  syncfusion_flutter_charts: ^19.1.54
+  # 원형 차트를 위한 패키지
+  # 근데 최신 버전은 플러터 3.7.* 버전에선 오류남
+  # 최신 버전 사용하려면 플러터 3.10.* 버전 사용해야함
+  # https://help.syncfusion.com/flutter/circular-charts/getting-started
+  # https://www.youtube.com/watch?v=VJxPp7-2nGk
+
+  flutter_svg: ^1.0.7
+  # svg 파일 사용을 용이하게
+
+  number_slide_animation: ^0.2.1
+  # 넘버링 애니메이션
+
+  fluttertoast: ^8.2.2
+  # 토스트 메시지
+
+  widget_and_text_animator: ^1.0.9
+  # 애니메이션 
+
+  scroll_date_picker: ^3.7.3
+  # 스크롤 데이트 픽커
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/images/svg/
