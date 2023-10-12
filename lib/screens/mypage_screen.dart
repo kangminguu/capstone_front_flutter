@@ -3,6 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
 
+import 'package:test_chart/screens/change_email_screen.dart';
+import 'package:test_chart/screens/change_nickname_screen.dart';
+import 'package:test_chart/screens/change_passcheck_screen.dart';
+
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({super.key});
 
@@ -132,7 +136,14 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           height: deviceSizeH * 0.045,
                           width: deviceSizeW * 0.15,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ChangeEmailScreen()),
+                              );
+                            },
                             style: TextButton.styleFrom(
                               backgroundColor: const Color(0xFFF2F4F6),
                               shape: RoundedRectangleBorder(
@@ -182,7 +193,15 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           height: deviceSizeH * 0.045,
                           width: deviceSizeW * 0.15,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ChangePassCheckScreen(),
+                                ),
+                              );
+                            },
                             style: TextButton.styleFrom(
                               backgroundColor: const Color(0xFFF2F4F6),
                               shape: RoundedRectangleBorder(
@@ -232,7 +251,15 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           height: deviceSizeH * 0.045,
                           width: deviceSizeW * 0.15,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ChangeNicknameScreen(),
+                                ),
+                              );
+                            },
                             style: TextButton.styleFrom(
                               backgroundColor: const Color(0xFFF2F4F6),
                               shape: RoundedRectangleBorder(

@@ -22,16 +22,15 @@ class _MainScreenState extends State<MainScreen> {
 
   late List<DataForChart> _chartData;
 
-  late String money1;
-  late String money2;
-  late String money3;
+  late String money1 = "3";
+  late String money2 = "860";
+  late String money3 = "400";
+
+  bool isEmpty = false;
 
   @override
   void initState() {
     _chartData = getChartData();
-    money1 = "5";
-    money2 = "942";
-    money3 = "700";
     super.initState();
   }
 
@@ -84,9 +83,18 @@ class _MainScreenState extends State<MainScreen> {
               color: const Color(0xFFF2F4F6),
               height: statusBarSize,
             ),
-            Container(
-              color: const Color(0xFFF2F4F6),
-              height: deviceSizeH * 0.035,
+            GestureDetector(
+              onDoubleTap: () {
+                setState(() {
+                  isEmpty ? isEmpty = !isEmpty : isEmpty = !isEmpty;
+                  _chartData = getChartData();
+                  print(isEmpty.toString());
+                });
+              },
+              child: Container(
+                color: const Color(0xFFF2F4F6),
+                height: deviceSizeH * 0.035,
+              ),
             ),
             Container(
               color: const Color(0xFFF2F4F6),
@@ -108,28 +116,17 @@ class _MainScreenState extends State<MainScreen> {
                       Stack(
                         children: [
                           Positioned(
-                            top: ((deviceSizeH * 0.025) / 2) - (fontSizeM / 2),
-                            left: (deviceSizeH * 0.01),
+                            top: 0,
+                            right: 0,
                             child: SvgPicture.asset(
-                              'assets/images/svg/mypage.svg',
-                              height: fontSizeM,
-                            ),
-                          ),
-                          Positioned(
-                            top: ((deviceSizeH * 0.025) / 2) - (fontSizeM / 2),
-                            left: (deviceSizeH * 0.025),
-                            child: Text(
-                              "MY",
-                              style: TextStyle(
-                                fontSize: fontSizeM,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFFB1B8C0),
-                              ),
+                              'assets/images/svg/my_info.svg',
+                              height: deviceSizeH * 0.025,
                             ),
                           ),
                           SizedBox(
-                            width: deviceSizeH * 0.06,
-                            child: OutlinedButton(
+                            height: deviceSizeH * 0.025,
+                            width: deviceSizeH * 0.025,
+                            child: TextButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -147,7 +144,7 @@ class _MainScreenState extends State<MainScreen> {
                                       BorderRadius.all(Radius.circular(100)),
                                 ),
                               ),
-                              child: null,
+                              child: const Text(""),
                             ),
                           ),
                         ],
@@ -299,98 +296,123 @@ class _MainScreenState extends State<MainScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      NumberSlideAnimation(
-                                        number: money1,
-                                        duration:
-                                            const Duration(milliseconds: 1500),
-                                        curve: Curves.bounceIn,
-                                        textStyle: TextStyle(
-                                          fontSize: fontSizeL,
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFF474747),
+                                  isEmpty
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "0원",
+                                              style: TextStyle(
+                                                fontSize: fontSizeL,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFF474747),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            NumberSlideAnimation(
+                                              number: money1,
+                                              duration: const Duration(
+                                                  milliseconds: 1500),
+                                              curve: Curves.bounceIn,
+                                              textStyle: TextStyle(
+                                                fontSize: fontSizeL,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFF474747),
+                                              ),
+                                            ),
+                                            Text(
+                                              ",",
+                                              style: TextStyle(
+                                                fontSize: fontSizeL,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFF474747),
+                                              ),
+                                            ),
+                                            NumberSlideAnimation(
+                                              number: money2,
+                                              duration: const Duration(
+                                                  milliseconds: 1500),
+                                              curve: Curves.bounceIn,
+                                              textStyle: TextStyle(
+                                                fontSize: fontSizeL,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFF474747),
+                                              ),
+                                            ),
+                                            Text(
+                                              ",",
+                                              style: TextStyle(
+                                                fontSize: fontSizeL,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFF474747),
+                                              ),
+                                            ),
+                                            NumberSlideAnimation(
+                                              number: money3,
+                                              duration: const Duration(
+                                                  milliseconds: 1750),
+                                              curve: Curves.bounceIn,
+                                              textStyle: TextStyle(
+                                                fontSize: fontSizeL,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFF474747),
+                                              ),
+                                            ),
+                                            Text(
+                                              "원",
+                                              style: TextStyle(
+                                                fontSize: fontSizeL,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFF474747),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                      Text(
-                                        ",",
-                                        style: TextStyle(
-                                          fontSize: fontSizeL,
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFF474747),
-                                        ),
-                                      ),
-                                      NumberSlideAnimation(
-                                        number: money2,
-                                        duration:
-                                            const Duration(milliseconds: 1500),
-                                        curve: Curves.bounceIn,
-                                        textStyle: TextStyle(
-                                          fontSize: fontSizeL,
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFF474747),
-                                        ),
-                                      ),
-                                      Text(
-                                        ",",
-                                        style: TextStyle(
-                                          fontSize: fontSizeL,
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFF474747),
-                                        ),
-                                      ),
-                                      NumberSlideAnimation(
-                                        number: money3,
-                                        duration:
-                                            const Duration(milliseconds: 1750),
-                                        curve: Curves.bounceIn,
-                                        textStyle: TextStyle(
-                                          fontSize: fontSizeL,
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFF474747),
-                                        ),
-                                      ),
-                                      Text(
-                                        "원",
-                                        style: TextStyle(
-                                          fontSize: fontSizeL,
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFF474747),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                                   const SizedBox(
                                     height: 7,
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "지난 달 보다 ",
-                                        style: TextStyle(
-                                          fontSize: fontSizeS,
-                                          color: const Color(0xFF999999),
+                                  isEmpty
+                                      ? Text(
+                                          "아직 이번달 소비 내역이 없어요.",
+                                          style: TextStyle(
+                                            fontSize: fontSizeS,
+                                            color: const Color(0xFF999999),
+                                          ),
+                                        )
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "지난 달 보다 ",
+                                              style: TextStyle(
+                                                fontSize: fontSizeS,
+                                                color: const Color(0xFF999999),
+                                              ),
+                                            ),
+                                            Text(
+                                              "1,000",
+                                              style: TextStyle(
+                                                fontSize: fontSizeS,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFF474747),
+                                              ),
+                                            ),
+                                            Text(
+                                              "원 을 더 소비했어요.",
+                                              style: TextStyle(
+                                                fontSize: fontSizeS,
+                                                color: const Color(0xFF999999),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                      Text(
-                                        "1,000",
-                                        style: TextStyle(
-                                          fontSize: fontSizeS,
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFF474747),
-                                        ),
-                                      ),
-                                      Text(
-                                        "원 을 더 소비했어요.",
-                                        style: TextStyle(
-                                          fontSize: fontSizeS,
-                                          color: const Color(0xFF999999),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                                 ],
                               ),
                             ),
@@ -505,45 +527,65 @@ class _MainScreenState extends State<MainScreen> {
                               alignment: Alignment.centerLeft,
                               height: deviceSizeH * 0.07,
                               width: deviceSizeW * 0.8,
-                              child: Text(
-                                "스낵",
-                                style: TextStyle(
-                                  fontSize: fontSizeL,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF474747),
-                                ),
-                              ),
+                              child: isEmpty
+                                  ? Opacity(
+                                      opacity: 0.5,
+                                      child: Text(
+                                        "없어요",
+                                        style: TextStyle(
+                                          fontSize: fontSizeL,
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF474747),
+                                        ),
+                                      ),
+                                    )
+                                  : Text(
+                                      "스낵",
+                                      style: TextStyle(
+                                        fontSize: fontSizeL,
+                                        fontWeight: FontWeight.bold,
+                                        color: const Color(0xFF474747),
+                                      ),
+                                    ),
                             ),
                             Container(
                               alignment: Alignment.topLeft,
                               height: deviceSizeH * 0.05,
                               width: deviceSizeW * 0.8,
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "스낵을 ",
-                                    style: TextStyle(
-                                      fontSize: fontSizeS,
-                                      color: const Color(0xFF999999),
+                              child: isEmpty
+                                  ? Text(
+                                      "아직 이번달 소비 내역이 없어요.",
+                                      style: TextStyle(
+                                        fontSize: fontSizeS,
+                                        color: const Color(0xFF999999),
+                                      ),
+                                    )
+                                  : Row(
+                                      children: [
+                                        Text(
+                                          "스낵을 ",
+                                          style: TextStyle(
+                                            fontSize: fontSizeS,
+                                            color: const Color(0xFF999999),
+                                          ),
+                                        ),
+                                        Text(
+                                          "12",
+                                          style: TextStyle(
+                                            fontSize: fontSizeS,
+                                            fontWeight: FontWeight.bold,
+                                            color: const Color(0xFF474747),
+                                          ),
+                                        ),
+                                        Text(
+                                          "회로 가장 많이 구매했어요.",
+                                          style: TextStyle(
+                                            fontSize: fontSizeS,
+                                            color: const Color(0xFF999999),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  Text(
-                                    "12",
-                                    style: TextStyle(
-                                      fontSize: fontSizeS,
-                                      fontWeight: FontWeight.bold,
-                                      color: const Color(0xFF474747),
-                                    ),
-                                  ),
-                                  Text(
-                                    "회로 가장 많이 구매했어요.",
-                                    style: TextStyle(
-                                      fontSize: fontSizeS,
-                                      color: const Color(0xFF999999),
-                                    ),
-                                  ),
-                                ],
-                              ),
                             ),
                             SizedBox(
                               height: deviceSizeH * 0.25,
@@ -607,7 +649,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  "스낵",
+                                                  isEmpty ? "-" : "스낵",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -621,7 +663,7 @@ class _MainScreenState extends State<MainScreen> {
                                                     Alignment.centerRight,
                                                 width: deviceSizeW * 0.1,
                                                 child: Text(
-                                                  "12회",
+                                                  isEmpty ? "0회" : "12회",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -654,7 +696,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  "냉동식품",
+                                                  isEmpty ? "-" : "냉동식품",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -668,7 +710,7 @@ class _MainScreenState extends State<MainScreen> {
                                                     Alignment.centerRight,
                                                 width: deviceSizeW * 0.1,
                                                 child: Text(
-                                                  "5회",
+                                                  isEmpty ? "0회" : "5회",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -701,7 +743,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  "생필품",
+                                                  isEmpty ? "-" : "생필품",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -715,7 +757,7 @@ class _MainScreenState extends State<MainScreen> {
                                                     Alignment.centerRight,
                                                 width: deviceSizeW * 0.1,
                                                 child: Text(
-                                                  "4회",
+                                                  isEmpty ? "0회" : "4회",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -748,7 +790,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  "기타",
+                                                  isEmpty ? "-" : "기타",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -762,7 +804,7 @@ class _MainScreenState extends State<MainScreen> {
                                                     Alignment.centerRight,
                                                 width: deviceSizeW * 0.1,
                                                 child: Text(
-                                                  "8회",
+                                                  isEmpty ? "0회" : "8회",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -806,7 +848,14 @@ class _MainScreenState extends State<MainScreen> {
       DataForChart('first', 12, const Color(0xFFFF833D)),
     ];
 
-    return chartData;
+    final List<DataForChart> chartEmpty = [
+      DataForChart('others', 1, const Color(0xFFD6D6D6)),
+      DataForChart('third', 0, const Color(0xFF979797)),
+      DataForChart('second', 0, const Color(0xFF6B6B6B)),
+      DataForChart('first', 0, const Color(0xFFFF833D)),
+    ];
+
+    return isEmpty ? chartEmpty : chartData;
   }
 }
 

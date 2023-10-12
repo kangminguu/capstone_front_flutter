@@ -3,43 +3,35 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
 
-import 'package:test_chart/screens/first_screen.dart';
-import 'package:test_chart/screens/login_screen.dart';
+import 'package:test_chart/screens/done_change_screen.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class ChangePasswordScreen extends StatefulWidget {
+  const ChangePasswordScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
 
-  late String email;
   late String password;
   late String valPassword;
-  late String nickname;
 
   late bool isFirst;
-  late bool checkEmail;
-  late bool checkPass;
-  late bool checkNick;
+  late bool checkPassword;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    email = "";
+
     password = "";
     valPassword = "";
-    nickname = "";
 
     isFirst = true;
-    checkEmail = false;
-    checkPass = false;
-    checkNick = false;
+    checkPassword = false;
   }
 
   @override
@@ -55,6 +47,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     double fontSizeS = deviceSizeH * 0.015;
     double fontSizeM = deviceSizeH * 0.017;
+    double fontSizeML = deviceSizeH * 0.02;
     double fontSizeL = deviceSizeH * 0.03;
 
     PreferredSize appBar = PreferredSize(
@@ -66,11 +59,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             onPressed: () {
               Navigator.pop(
                 context,
-                MaterialPageRoute(builder: (context) => const RegisterScreen()),
-              );
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FirstScreen()),
+                MaterialPageRoute(
+                  builder: (context) => const ChangePasswordScreen(),
+                ),
               );
             },
             icon: SvgPicture.asset(
@@ -107,7 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   width: deviceSizeW * 0.9,
                   height: deviceSizeH * 0.1,
                   child: Text(
-                    "회원가입을 위해\n정보를 입력해 주세요",
+                    "변경할 비밀번호를\n입력해주세요.",
                     style: TextStyle(
                       fontSize: fontSizeL,
                       color: const Color(0xFF474747),
@@ -126,100 +117,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Container(
                         alignment: Alignment.centerLeft,
                         height: deviceSizeH * 0.03,
-                        child: Row(
-                          children: [
-                            Container(
-                              width: deviceSizeW * 0.9 / 2,
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "이메일",
-                                style: TextStyle(
-                                  fontSize: fontSizeS,
-                                  color: const Color(0xFF474747),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: deviceSizeW * 0.9 / 2,
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                isFirst ? "" : (checkEmail ? "" : "잘못된 형식이에요"),
-                                style: TextStyle(
-                                  fontSize: fontSizeS,
-                                  color: const Color(0xFFF57C75),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.only(
-                          bottom: deviceSizeH * 0.02,
-                          top: deviceSizeH * 0.01,
-                        ),
-                        height: deviceSizeH * 0.06,
-                        child: Stack(
-                          children: [
-                            SizedBox(
-                              height: deviceSizeH * 0.06,
-                              child: TextFormField(
-                                onChanged: (value) {
-                                  email = value;
-                                },
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: const Color(0xFFF2F4F6),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Color(0x00000000),
-                                    ),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(deviceSizeW * 0.03)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Color(0xFFFF833D),
-                                    ),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(deviceSizeW * 0.03)),
-                                  ),
-                                  hintText: "이메일",
-                                  hintStyle: TextStyle(
-                                    fontSize: fontSizeM,
-                                    color: const Color(0xFFB7B7B7),
-                                  ),
-                                ),
-                                style: TextStyle(
-                                  fontSize: fontSizeM,
-                                  color: const Color(0xFF474747),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              right: 0,
-                              top: deviceSizeH * 0.015 +
-                                  (deviceSizeH * (0.005 / 2)),
-                              child: SizedBox(
-                                height: isFirst ? 0 : deviceSizeH * 0.025,
-                                child: SvgPicture.asset(checkEmail
-                                    ? 'assets/images/svg/correct.svg'
-                                    : 'assets/images/svg/incorrect.svg'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        height: deviceSizeH * 0.03,
                         child: Container(
                           width: deviceSizeW * 0.9 / 2,
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "비밀번호",
+                            "변경할 비밀번호",
                             style: TextStyle(
                               fontSize: fontSizeS,
                               color: const Color(0xFF474747),
@@ -278,7 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   (deviceSizeH * (0.005 / 2)),
                               child: SizedBox(
                                 height: isFirst ? 0 : deviceSizeH * 0.025,
-                                child: SvgPicture.asset(checkPass
+                                child: SvgPicture.asset(checkPassword
                                     ? 'assets/images/svg/correct.svg'
                                     : 'assets/images/svg/incorrect.svg'),
                               ),
@@ -295,7 +197,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: deviceSizeW * 0.9 / 2,
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                "비밀번호 확인",
+                                "변경할 비밀번호 확인",
                                 style: TextStyle(
                                   fontSize: fontSizeS,
                                   color: const Color(0xFF474747),
@@ -307,7 +209,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: deviceSizeW * 0.9 / 2,
                               alignment: Alignment.centerRight,
                               child: Text(
-                                isFirst ? "" : (checkPass ? "" : "잘못된 형식이에요"),
+                                isFirst
+                                    ? ""
+                                    : (checkPassword ? "" : "잘못된 형식이에요"),
                                 style: TextStyle(
                                   fontSize: fontSizeS,
                                   color: const Color(0xFFF57C75),
@@ -349,7 +253,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(deviceSizeW * 0.03)),
                                   ),
-                                  hintText: "비밀번호 확인",
+                                  hintText: "변경할 비밀번호 확인",
                                   hintStyle: TextStyle(
                                     fontSize: fontSizeM,
                                     color: const Color(0xFFB7B7B7),
@@ -367,96 +271,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   (deviceSizeH * (0.005 / 2)),
                               child: SizedBox(
                                 height: isFirst ? 0 : deviceSizeH * 0.025,
-                                child: SvgPicture.asset(checkPass
-                                    ? 'assets/images/svg/correct.svg'
-                                    : 'assets/images/svg/incorrect.svg'),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        height: deviceSizeH * 0.03,
-                        child: Row(
-                          children: [
-                            Container(
-                              width: deviceSizeW * 0.9 / 2,
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "닉네임",
-                                style: TextStyle(
-                                  fontSize: fontSizeS,
-                                  color: const Color(0xFF474747),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: deviceSizeW * 0.9 / 2,
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                isFirst ? "" : (checkNick ? "" : "잘못된 형식이에요"),
-                                style: TextStyle(
-                                  fontSize: fontSizeS,
-                                  color: const Color(0xFFF57C75),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.only(
-                          bottom: deviceSizeH * 0.02,
-                          top: deviceSizeH * 0.01,
-                        ),
-                        height: deviceSizeH * 0.06,
-                        child: Stack(
-                          children: [
-                            SizedBox(
-                              height: deviceSizeH * 0.06,
-                              child: TextFormField(
-                                onChanged: (value) {
-                                  nickname = value;
-                                },
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: const Color(0xFFF2F4F6),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Color(0x00000000),
-                                    ),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(deviceSizeW * 0.03)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Color(0xFFFF833D),
-                                    ),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(deviceSizeW * 0.03)),
-                                  ),
-                                  hintText: "한글 및 영문 2~8자리",
-                                  hintStyle: TextStyle(
-                                    fontSize: fontSizeM,
-                                    color: const Color(0xFFB7B7B7),
-                                  ),
-                                ),
-                                style: TextStyle(
-                                  fontSize: fontSizeM,
-                                  color: const Color(0xFF474747),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              right: 0,
-                              top: deviceSizeH * 0.015 +
-                                  (deviceSizeH * (0.005 / 2)),
-                              child: SizedBox(
-                                height: isFirst ? 0 : deviceSizeH * 0.025,
-                                child: SvgPicture.asset(checkNick
+                                child: SvgPicture.asset(checkPassword
                                     ? 'assets/images/svg/correct.svg'
                                     : 'assets/images/svg/incorrect.svg'),
                               ),
@@ -480,54 +295,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     width: deviceSizeW * 0.9,
                     height: deviceSizeH * 0.06,
                     child: TextButton(
-                      onPressed: (email != "" &&
-                              password != "" &&
-                              valPassword != "" &&
-                              nickname != "")
+                      onPressed: (password != "" && valPassword != "")
                           ? () {
                               setState(() {});
                               isFirst = false;
-                              // 이메일
-                              print(ValRegisterForm().valEmail(email));
-                              ValRegisterForm().valEmail(email)
-                                  ? checkEmail = true
-                                  : checkEmail = false;
-                              // 비밀번호
-                              print(ValRegisterForm()
-                                  .valPassword(password, valPassword));
-                              ValRegisterForm()
+                              ValPasswordForm()
                                       .valPassword(password, valPassword)
-                                  ? checkPass = true
-                                  : checkPass = false;
-                              // 닉네임
-                              print(ValRegisterForm().valNickname(nickname));
-                              ValRegisterForm().valNickname(nickname)
-                                  ? checkNick = true
-                                  : checkNick = false;
-                              if (checkEmail == true &&
-                                  checkPass == true &&
-                                  checkNick == true) {
-                                print("회원가입 올바르게 완료");
+                                  ? checkPassword = true
+                                  : checkPassword = false;
+                              if (checkPassword == true) {
                                 Navigator.pop(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const LoginScreen()),
+                                          const ChangePasswordScreen()),
                                 );
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const FirstScreen()),
+                                          const DoneChangeScreen()),
                                 );
                               }
                             }
                           : null,
                       style: TextButton.styleFrom(
-                        backgroundColor: (email != "" &&
-                                password != "" &&
-                                valPassword != "" &&
-                                nickname != "")
+                        backgroundColor: (password != "" && valPassword != "")
                             ? const Color(0xFFFF833D)
                             : const Color(0xFFFFC19E),
                         shape: RoundedRectangleBorder(
@@ -536,7 +329,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       child: Text(
-                        "회원가입 완료",
+                        "변경 완료",
                         style: TextStyle(
                           fontSize: fontSizeM,
                           color: Colors.white,
@@ -557,26 +350,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 }
 
-class ValRegisterForm {
-  bool valEmail(String email) {
-    return RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email);
-  }
-
+class ValPasswordForm {
   bool valPassword(String password, valPassword) {
     if (password.length >= 8 &&
         password.length <= 16 &&
         password.toString() == valPassword.toString()) {
       return RegExp(r"^[a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+").hasMatch(password);
-    } else {
-      return false;
-    }
-  }
-
-  bool valNickname(String nickname) {
-    if (nickname.length >= 2 && nickname.length <= 8) {
-      return RegExp(r"^[a-zA-Z가-힣.]+").hasMatch(nickname);
     } else {
       return false;
     }

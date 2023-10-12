@@ -90,7 +90,8 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.all(
-                            Radius.circular(deviceSizeW * 0.03)),
+                          Radius.circular(deviceSizeW * 0.05),
+                        ),
                       ),
                       height: deviceSizeH * 0.18,
                       width: deviceSizeW * 0.9,
@@ -367,7 +368,7 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(
-              Radius.circular(deviceSizeW * 0.03),
+              Radius.circular(deviceSizeW * 0.05),
             ),
           ),
           height: deviceSizeH * 0.1,
@@ -380,19 +381,32 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
               Container(
                 alignment: Alignment.centerLeft,
                 height: deviceSizeH * 0.08,
-                width: deviceSizeW * 0.8,
+                width: deviceSizeW * 0.85,
                 child: Row(
                   children: [
+                    ClipRRect(
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(deviceSizeW * 0.03)),
+                      child: Image.network(
+                        'https://sitem.ssgcdn.com/08/29/24/item/1000005242908_i1_1100.jpg',
+                        fit: BoxFit.fill,
+                        height: deviceSizeW * 0.15,
+                        width: deviceSizeW * 0.15,
+                      ),
+                    ),
+                    Container(
+                      width: deviceSizeW * 0.03,
+                    ),
                     Column(
                       children: [
                         SizedBox(
                           height: deviceSizeH * 0.01,
-                          width: deviceSizeW * 0.5,
+                          width: deviceSizeW * 0.345,
                         ),
                         Container(
                           alignment: Alignment.topLeft,
                           height: deviceSizeH * 0.07,
-                          width: deviceSizeW * 0.5,
+                          width: deviceSizeW * 0.345,
                           child: Text(
                             "롯데 말랑카우 오리지널(70g)",
                             overflow: TextOverflow.fade,

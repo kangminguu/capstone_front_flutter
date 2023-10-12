@@ -16,7 +16,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
 
-  DateTime _selectedDate = DateTime.now();
+  bool isEmpty = false;
+
+  final DateTime _selectedDate = DateTime.now();
+  String _selectedYear = DateTime.now().year.toString();
+  String _selectedMonth = DateTime.now().month.toString();
+  String _selectedDay = DateTime.now().day.toString();
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +89,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius:
-                    BorderRadius.all(Radius.circular(deviceSizeW * 0.03)),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(deviceSizeW * 0.05),
+                ),
               ),
               height: deviceSizeH * 0.18,
               width: deviceSizeW * 0.9,
@@ -101,47 +107,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         Row(
                           children: [
                             Text(
-                              _selectedDate.year.toString(),
+                              "$_selectedYear년 $_selectedMonth월 $_selectedDay일",
                               style: TextStyle(
                                 fontSize: fontSizeML,
                                 fontWeight: FontWeight.bold,
-                                color: const Color(0xFF474747),
-                              ),
-                            ),
-                            Text(
-                              "년 ",
-                              style: TextStyle(
-                                fontSize: fontSizeML,
-                                color: const Color(0xFF474747),
-                              ),
-                            ),
-                            Text(
-                              _selectedDate.month.toString(),
-                              style: TextStyle(
-                                fontSize: fontSizeML,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF474747),
-                              ),
-                            ),
-                            Text(
-                              "월 ",
-                              style: TextStyle(
-                                fontSize: fontSizeML,
-                                color: const Color(0xFF474747),
-                              ),
-                            ),
-                            Text(
-                              _selectedDate.day.toString(),
-                              style: TextStyle(
-                                fontSize: fontSizeML,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF474747),
-                              ),
-                            ),
-                            Text(
-                              "일",
-                              style: TextStyle(
-                                fontSize: fontSizeML,
                                 color: const Color(0xFF474747),
                               ),
                             ),
@@ -306,21 +275,48 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             SizedBox(
               height: deviceSizeH * 0.71,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                  ],
-                ),
-              ),
+              child: isEmpty
+                  ? Opacity(
+                      opacity: 0.5,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/images/svg/face_worry.svg',
+                            height: deviceSizeH * 0.1,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "아무 기록이 없어요",
+                            style: TextStyle(
+                              fontSize: fontSizeML,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF474747),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        children: [
+                          singleProductDetail(fontSizeM),
+                          singleProductDetail(fontSizeM),
+                          singleProductDetail(fontSizeM),
+                          singleProductDetail(fontSizeM),
+                          singleProductDetail(fontSizeM),
+                          singleProductDetail(fontSizeM),
+                          singleProductDetail(fontSizeM),
+                          singleProductDetail(fontSizeM),
+                        ],
+                      ),
+                    ),
             ),
           ],
         ),
@@ -335,7 +331,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(
-              Radius.circular(deviceSizeW * 0.03),
+              Radius.circular(deviceSizeW * 0.05),
             ),
           ),
           height: deviceSizeH * 0.1,
@@ -348,19 +344,33 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Container(
                 alignment: Alignment.centerLeft,
                 height: deviceSizeH * 0.08,
-                width: deviceSizeW * 0.8,
+                width: deviceSizeW * 0.85,
                 child: Row(
                   children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(deviceSizeW * 0.03),
+                      ),
+                      child: Image.network(
+                        'https://sitem.ssgcdn.com/08/29/24/item/1000005242908_i1_1100.jpg',
+                        fit: BoxFit.fill,
+                        height: deviceSizeW * 0.15,
+                        width: deviceSizeW * 0.15,
+                      ),
+                    ),
+                    Container(
+                      width: deviceSizeW * 0.03,
+                    ),
                     Column(
                       children: [
                         SizedBox(
                           height: deviceSizeH * 0.01,
-                          width: deviceSizeW * 0.5,
+                          width: deviceSizeW * 0.345,
                         ),
                         Container(
                           alignment: Alignment.topLeft,
                           height: deviceSizeH * 0.07,
-                          width: deviceSizeW * 0.5,
+                          width: deviceSizeW * 0.345,
                           child: Text(
                             "롯데 말랑카우 오리지널(70g)",
                             overflow: TextOverflow.fade,
@@ -507,7 +517,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     locale: const Locale('ko'),
                     onDateTimeChanged: (DateTime value) {
                       setState(() {
-                        _selectedDate = value;
+                        _selectedYear = value.year.toString();
+                        _selectedMonth = value.month.toString();
+                        _selectedDay = value.day.toString();
+                        if (value.day.toString() == '11') {
+                          isEmpty = false;
+                        } else {
+                          isEmpty = true;
+                        }
                       });
                     },
                     scrollViewOptions: const DatePickerScrollViewOptions(
