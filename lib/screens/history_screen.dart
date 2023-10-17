@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
 
 import 'package:scroll_date_picker/scroll_date_picker.dart';
+import 'package:test_chart/screens/main_screen.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -59,6 +60,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Navigator.pop(
                 context,
                 MaterialPageRoute(builder: (context) => const HistoryScreen()),
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MainScreen()),
               );
             },
             icon: SvgPicture.asset(

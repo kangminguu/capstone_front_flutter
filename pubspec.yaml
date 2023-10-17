@@ -36,6 +36,12 @@ dependencies:
   scroll_date_picker: ^3.7.3
   # 스크롤 데이트 픽커
 
+  camera: ^0.10.5+5
+  # 카메라
+
+  provider: ^6.0.5
+  # 상태관리
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
-
+import 'package:camera/camera.dart';
+import 'package:test_chart/main.dart';
 import 'package:test_chart/screens/detail_cart_screen.dart';
+import 'package:test_chart/screens/main_screen.dart';
+
+List<CameraDescription> _cameras = ProvideCamera().cameras;
+late CameraController controller;
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -19,9 +24,77 @@ class _CameraScreenState extends State<CameraScreen> {
   bool showHelpPage = false;
   bool showRecoPage = false;
 
+  // late CameraController controller;
+
+  late int imageCount;
+
+  @override
+  void initState() {
+    controller = CameraController(
+      _cameras[0],
+      ResolutionPreset.high,
+      enableAudio: false,
+    );
+
+    imageCount = 0;
+
+    if (!controller.value.isInitialized) {
+      controller.initialize().then((_) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {});
+      }).catchError((Object e) {
+        if (e is CameraException) {
+          switch (e.code) {
+            case 'CameraAccessDenied':
+              break;
+            default:
+              break;
+          }
+        }
+      });
+    }
+    // print(ProvideController().controller);
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    stopStearmController();
+  }
+
+  imageStreamStart() {
+    if (controller.value.isInitialized) {
+      controller.startImageStream((image) {
+        imageCount++;
+        if (imageCount % 30 == 0) {
+          imageCount = 0;
+          print(image.planes[0].bytes);
+          print(image.planes[1].bytes);
+          print(image.planes[2].bytes);
+        }
+      });
+    }
+  }
+
+  imageStreamStop() {
+    controller.stopImageStream();
+    imageCount = 0;
+  }
+
+  stopStearmController() {
+    controller.stopImageStream();
+    controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // 상태바 사용
+    imageStreamStart();
+
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: [SystemUiOverlay.top]);
 
@@ -51,158 +124,129 @@ class _CameraScreenState extends State<CameraScreen> {
                 },
                 child: Container(
                   alignment: Alignment.bottomCenter,
-                  color: Colors.grey,
+                  color: Colors.black,
                   height: deviceSizeH,
-                  child: Container(
-                    height: deviceSizeH * 0.25,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(deviceSizeW * 0.05),
-                        topRight: Radius.circular(deviceSizeW * 0.05),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: 0,
+                        child: SizedBox(
+                          height: deviceSizeH * 0.79,
+                          width: deviceSizeW,
+                          child: CameraPreview(controller),
+                        ),
                       ),
-                    ),
-                    child: Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            showShoppingList(context);
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            color: const Color(0xFFFFFFFF),
-                            height: deviceSizeH * 0.04,
-                            width: deviceSizeW * 0.2,
-                            child: Transform.rotate(
-                              angle: -math.pi / 2,
-                              child: SvgPicture.asset(
-                                'assets/images/svg/arrow.svg',
-                                height: deviceSizeH * 0.025,
-                                width: deviceSizeH * 0.025,
-                              ),
+                      Positioned(
+                        bottom: 0,
+                        child: Container(
+                          height: deviceSizeH * 0.25,
+                          width: deviceSizeW,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(deviceSizeW * 0.05),
+                              topRight: Radius.circular(deviceSizeW * 0.05),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: deviceSizeH * 0.05 - 1,
-                          width: deviceSizeW * 0.9,
-                          child: Row(
+                          child: Column(
                             children: [
-                              Container(
-                                alignment: Alignment.center,
-                                width: deviceSizeW * 0.4,
-                                child: Text(
-                                  "상품명",
-                                  style: TextStyle(
-                                    fontSize: fontSizeS,
-                                    color: const Color(0xFF474747),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: deviceSizeW * 0.25,
-                                child: Text(
-                                  "가격",
-                                  style: TextStyle(
-                                    fontSize: fontSizeS,
-                                    color: const Color(0xFF474747),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: deviceSizeW * 0.25,
-                                child: Text(
-                                  "수량",
-                                  style: TextStyle(
-                                    fontSize: fontSizeS,
-                                    color: const Color(0xFF474747),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 1,
-                          width: deviceSizeW * 0.9,
-                          child: Row(
-                            children: [
-                              for (var i = 0; i < 30; i++)
-                                Row(
-                                  children: [
-                                    Container(
-                                      color: const Color(0xFF999999),
-                                      width: (deviceSizeW * 0.9) / 90,
+                              GestureDetector(
+                                onTap: () {
+                                  showShoppingList(context);
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  color: const Color(0xFFFFFFFF),
+                                  height: deviceSizeH * 0.04,
+                                  width: deviceSizeW * 0.2,
+                                  child: Transform.rotate(
+                                    angle: -math.pi / 2,
+                                    child: SvgPicture.asset(
+                                      'assets/images/svg/arrow.svg',
+                                      height: deviceSizeH * 0.025,
+                                      width: deviceSizeH * 0.025,
                                     ),
-                                    Container(
-                                      color: Colors.white,
-                                      width: (deviceSizeW * 0.9) / 90,
-                                    ),
-                                    Container(
-                                      color: const Color(0xFF999999),
-                                      width: (deviceSizeW * 0.9) / 90,
-                                    ),
-                                  ],
-                                ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          // color: Colors.green,
-                          height: deviceSizeH * 0.08,
-                          width: deviceSizeW * 0.9,
-                          child: Row(
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                width: deviceSizeW * 0.4,
-                                child: Text(
-                                  "롯데 말랑카우 오리지널(70g)",
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: fontSizeM,
-                                    fontWeight: FontWeight.bold,
-                                    color: const Color(0xFF474747),
                                   ),
                                 ),
                               ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: deviceSizeW * 0.25,
-                                child: Text(
-                                  "3,380원",
-                                  style: TextStyle(
-                                    fontSize: fontSizeM,
-                                    fontWeight: FontWeight.bold,
-                                    color: const Color(0xFF474747),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: deviceSizeW * 0.25,
+                              SizedBox(
+                                height: deviceSizeH * 0.05 - 1,
+                                width: deviceSizeW * 0.9,
                                 child: Row(
                                   children: [
                                     Container(
                                       alignment: Alignment.center,
-                                      height: deviceSizeW * 0.1,
-                                      width: deviceSizeW * 0.1,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          print("minus");
-                                        },
-                                        icon: SvgPicture.asset(
-                                          'assets/images/svg/btn_minus.svg',
+                                      width: deviceSizeW * 0.4,
+                                      child: Text(
+                                        "상품명",
+                                        style: TextStyle(
+                                          fontSize: fontSizeS,
+                                          color: const Color(0xFF474747),
                                         ),
                                       ),
                                     ),
                                     Container(
                                       alignment: Alignment.center,
-                                      width: deviceSizeW * 0.05,
+                                      width: deviceSizeW * 0.25,
                                       child: Text(
-                                        "99",
+                                        "가격",
+                                        style: TextStyle(
+                                          fontSize: fontSizeS,
+                                          color: const Color(0xFF474747),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      width: deviceSizeW * 0.25,
+                                      child: Text(
+                                        "수량",
+                                        style: TextStyle(
+                                          fontSize: fontSizeS,
+                                          color: const Color(0xFF474747),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 1,
+                                width: deviceSizeW * 0.9,
+                                child: Row(
+                                  children: [
+                                    for (var i = 0; i < 30; i++)
+                                      Row(
+                                        children: [
+                                          Container(
+                                            color: const Color(0xFF999999),
+                                            width: (deviceSizeW * 0.9) / 90,
+                                          ),
+                                          Container(
+                                            color: Colors.white,
+                                            width: (deviceSizeW * 0.9) / 90,
+                                          ),
+                                          Container(
+                                            color: const Color(0xFF999999),
+                                            width: (deviceSizeW * 0.9) / 90,
+                                          ),
+                                        ],
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                // color: Colors.green,
+                                height: deviceSizeH * 0.08,
+                                width: deviceSizeW * 0.9,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.center,
+                                      width: deviceSizeW * 0.4,
+                                      child: Text(
+                                        "롯데 말랑카우 오리지널(70g)",
+                                        overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                           fontSize: fontSizeM,
                                           fontWeight: FontWeight.bold,
@@ -212,92 +256,144 @@ class _CameraScreenState extends State<CameraScreen> {
                                     ),
                                     Container(
                                       alignment: Alignment.center,
-                                      height: deviceSizeW * 0.1,
-                                      width: deviceSizeW * 0.1,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          print("plus");
-                                        },
-                                        icon: SvgPicture.asset(
-                                          'assets/images/svg/btn_plus.svg',
+                                      width: deviceSizeW * 0.25,
+                                      child: Text(
+                                        "3,380원",
+                                        style: TextStyle(
+                                          fontSize: fontSizeM,
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF474747),
                                         ),
+                                      ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      width: deviceSizeW * 0.25,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.center,
+                                            height: deviceSizeW * 0.1,
+                                            width: deviceSizeW * 0.1,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                print("minus");
+                                              },
+                                              icon: SvgPicture.asset(
+                                                'assets/images/svg/btn_minus.svg',
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            alignment: Alignment.center,
+                                            width: deviceSizeW * 0.05,
+                                            child: Text(
+                                              "99",
+                                              style: TextStyle(
+                                                fontSize: fontSizeM,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFF474747),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            alignment: Alignment.center,
+                                            height: deviceSizeW * 0.1,
+                                            width: deviceSizeW * 0.1,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                print("plus");
+                                              },
+                                              icon: SvgPicture.asset(
+                                                'assets/images/svg/btn_plus.svg',
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: deviceSizeH * 0.06,
-                          width: deviceSizeW * 0.9,
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const DetailCartScreen(),
-                                ),
-                              );
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFFFF833D),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(deviceSizeW * 0.03),
-                                ),
-                              ),
-                            ),
-                            child: SizedBox(
-                              height: deviceSizeH * 0.03,
-                              width: deviceSizeW * 0.9,
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    alignment: Alignment.center,
-                                    height: deviceSizeH * 0.03,
-                                    child: Text(
-                                      "쇼핑 정보 기록하기",
-                                      style: TextStyle(
-                                        fontSize: fontSizeM,
-                                        color: Colors.white,
+                              SizedBox(
+                                height: deviceSizeH * 0.06,
+                                width: deviceSizeW * 0.9,
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const CameraScreen(),
+                                      ),
+                                    );
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const DetailCartScreen(),
+                                      ),
+                                    );
+                                  },
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: const Color(0xFFFF833D),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(deviceSizeW * 0.03),
                                       ),
                                     ),
                                   ),
-                                  Positioned(
-                                    left: (deviceSizeH * 0.02) / 2,
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height: deviceSizeH * 0.03,
-                                      width: deviceSizeH * 0.03,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(100),
+                                  child: SizedBox(
+                                    height: deviceSizeH * 0.03,
+                                    width: deviceSizeW * 0.9,
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          alignment: Alignment.center,
+                                          height: deviceSizeH * 0.03,
+                                          child: Text(
+                                            "쇼핑 정보 기록하기",
+                                            style: TextStyle(
+                                              fontSize: fontSizeM,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      child: Text(
-                                        "5",
-                                        style: TextStyle(
-                                          fontSize: fontSizeM,
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFFFF833D),
-                                        ),
-                                      ),
+                                        Positioned(
+                                          left: (deviceSizeH * 0.02) / 2,
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            height: deviceSizeH * 0.03,
+                                            width: deviceSizeH * 0.03,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(100),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              "5",
+                                              style: TextStyle(
+                                                fontSize: fontSizeM,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFFFF833D),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                  )
-                                ],
+                                  ),
+                                ),
                               ),
-                            ),
+                              Container(
+                                height: deviceSizeH * 0.02,
+                              ),
+                            ],
                           ),
                         ),
-                        Container(
-                          height: deviceSizeH * 0.02,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -319,6 +415,11 @@ class _CameraScreenState extends State<CameraScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => const CameraScreen()),
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MainScreen()),
                             );
                           },
                           icon: SvgPicture.asset(
@@ -746,6 +847,11 @@ class _CameraScreenState extends State<CameraScreen> {
                 child: TextButton(
                   onPressed: () {
                     Navigator.pop(context);
+                    Navigator.pop(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CameraScreen()),
+                    );
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -989,3 +1095,7 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 }
+
+// class ProvideController extends ChangeNotifier {
+//   CameraController get controller => _CameraScreenState().controller;
+// }

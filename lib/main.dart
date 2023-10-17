@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:test_chart/screens/first_loading_screen.dart';
+import 'package:camera/camera.dart';
 
-void main() {
+late List<CameraDescription> _cameras;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  _cameras = await availableCameras();
+
   runApp(const MyApp());
 }
 
@@ -21,4 +28,8 @@ class _MyAppState extends State<MyApp> {
       home: FirstLoadingScreen(),
     );
   }
+}
+
+class ProvideCamera extends ChangeNotifier {
+  List<CameraDescription> get cameras => _cameras;
 }

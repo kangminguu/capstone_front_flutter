@@ -6,6 +6,7 @@ import 'dart:math' as math;
 import 'package:test_chart/screens/change_email_screen.dart';
 import 'package:test_chart/screens/change_nickname_screen.dart';
 import 'package:test_chart/screens/change_passcheck_screen.dart';
+import 'package:test_chart/screens/main_screen.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({super.key});
@@ -54,6 +55,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
               Navigator.pop(
                 context,
                 MaterialPageRoute(builder: (context) => const MyPageScreen()),
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MainScreen()),
               );
             },
             icon: SvgPicture.asset(

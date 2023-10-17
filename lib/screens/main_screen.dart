@@ -128,6 +128,11 @@ class _MainScreenState extends State<MainScreen> {
                             width: deviceSizeH * 0.025,
                             child: TextButton(
                               onPressed: () {
+                                Navigator.pop(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const MainScreen()),
+                                );
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -209,6 +214,13 @@ class _MainScreenState extends State<MainScreen> {
                                 width: deviceSizeW * 0.8,
                                 child: TextButton(
                                   onPressed: () {
+                                    Navigator.pop(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MainScreen(),
+                                      ),
+                                    );
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -427,6 +439,13 @@ class _MainScreenState extends State<MainScreen> {
                                   children: [
                                     OutlinedButton(
                                       onPressed: () {
+                                        Navigator.pop(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const MainScreen(),
+                                          ),
+                                        );
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(

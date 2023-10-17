@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:test_chart/screens/camera_screen.dart';
 import 'dart:math' as math;
-
 import 'package:test_chart/screens/done_register_screen.dart';
+
+// final CameraController controller = ProvideController().controller;
 
 class DetailCartScreen extends StatefulWidget {
   const DetailCartScreen({super.key});
@@ -53,6 +55,10 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => const DetailCartScreen()),
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CameraScreen()),
               );
             },
             icon: SvgPicture.asset(

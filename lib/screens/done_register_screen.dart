@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:test_chart/screens/main_screen.dart';
 
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
-
-import 'camera_screen.dart';
 
 class DoneRegisterScreen extends StatefulWidget {
   const DoneRegisterScreen({super.key});
@@ -24,11 +23,11 @@ class _DoneRegisterScreenState extends State<DoneRegisterScreen> {
     Timer(const Duration(milliseconds: 2500), () {
       Navigator.pop(
         context,
-        MaterialPageRoute(builder: (context) => const CameraScreen()),
-      );
-      Navigator.pop(
-        context,
         MaterialPageRoute(builder: (context) => const DoneRegisterScreen()),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MainScreen()),
       );
     });
   }

@@ -178,7 +178,7 @@ class _ChangePassCheckScreenState extends State<ChangePassCheckScreen> {
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(deviceSizeW * 0.03)),
                                   ),
-                                  hintText: "변경할 비밀번호",
+                                  hintText: "현재 비밀번호",
                                   hintStyle: TextStyle(
                                     fontSize: fontSizeM,
                                     color: const Color(0xFFB7B7B7),
