@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:test_chart/screens/main_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:math' as math;
 import 'first_screen.dart';
+import '../network/network.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,14 +20,16 @@ class _LoginScreenState extends State<LoginScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
 
-  final String correctEmail = "aaaa";
-  final String correctPassword = "aaaa";
-
   late String email;
   late String password;
 
   late bool isFirst;
   late bool checkLogin;
+
+  late String result;
+
+  // flutter secure storage
+  static const storage = FlutterSecureStorage();
 
   @override
   void initState() {
@@ -35,6 +41,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     isFirst = true;
     checkLogin = false;
+  }
+
+  // 로그인 함수
+  Login(data1, data2) async {
+    Network network = Network();
+    result = await network.Login(data1, data2);
+    return result;
   }
 
   @override
@@ -274,19 +287,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: deviceSizeH * 0.06,
                     child: TextButton(
                       onPressed: (email != "" && password != "")
-                          ? () {
-                              setState(() {});
-                              print(CheckLoginForm()
-                                  .checkEmail(email, correctEmail));
-                              print(CheckLoginForm()
-                                  .checkPassword(password, correctPassword));
+                          ? () async {
+                              result = await Login(email, password);
+
                               isFirst = false;
-                              if (CheckLoginForm()
-                                          .checkEmail(email, correctEmail) ==
-                                      true &&
-                                  CheckLoginForm().checkPassword(
-                                          password, correctPassword) ==
-                                      true) {
+                              if (result != '0') {
+                                storage.write(
+                                    key: 'login',
+                                    value: jsonEncode({
+                                      'email': email,
+                                      'password': password,
+                                      'nickname': result
+                                    }));
                                 Navigator.pop(
                                   context,
                                   MaterialPageRoute(
@@ -298,6 +310,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   MaterialPageRoute(
                                       builder: (context) => const MainScreen()),
                                 );
+                              } else {
+                                isFirst = false;
+                                setState(() {});
                               }
                             }
                           : null,
@@ -329,23 +344,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-}
-
-class CheckLoginForm {
-  bool checkEmail(String email, correctEmail) {
-    if (email == correctEmail) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  bool checkPassword(String password, correctPassword) {
-    if (password == correctPassword) {
-      return true;
-    } else {
-      return false;
-    }
   }
 }

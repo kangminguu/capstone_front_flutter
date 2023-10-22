@@ -39,9 +39,10 @@ dependencies:
   camera: ^0.10.5+5
   # 카메라
 
-  provider: ^6.0.5
-  # 상태관리
+  http:
+  # http 통신
 
+  flutter_secure_storage:
 dev_dependencies:
   flutter_test:
     sdk: flutter

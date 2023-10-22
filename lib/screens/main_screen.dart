@@ -1,12 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:number_slide_animation/number_slide_animation.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:test_chart/screens/camera_screen.dart';
 import 'package:test_chart/screens/mypage_screen.dart';
-
+import '../network/network.dart';
 import 'history_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -22,20 +25,34 @@ class _MainScreenState extends State<MainScreen> {
 
   late List<DataForChart> _chartData;
 
-  late String money1 = "3";
-  late String money2 = "860";
-  late String money3 = "400";
+  String nick = "";
+  List money = ["0", "0", "0"];
+  List category = ["", "", ""];
+  String categoryEtc = "기타";
+  List bought = ["0", "0", "0", "0"];
 
   bool isEmpty = false;
+  final storage = const FlutterSecureStorage();
 
   @override
   void initState() {
-    _chartData = getChartData();
+    Future.delayed(Duration.zero, () async {
+      dynamic userInfo = await storage.read(key: 'login');
+      userInfo = jsonDecode(userInfo);
+      Network network = Network();
+      var result = await network.mainPage(userInfo['email']);
+
+      money = result['totalprice'];
+      category = result['category'];
+      bought = result['bought'];
+      nick = userInfo['nickname'];
+      setState(() {});
+    });
+
     super.initState();
   }
 
   DateTime? currentBackPressTime;
-
   // WillPopScope는 사용자가 백버튼을 눌렀을 때 동작
   Future<bool> onWillPop() async {
     DateTime currentTime = DateTime.now();
@@ -54,8 +71,6 @@ class _MainScreenState extends State<MainScreen> {
       return false;
     }
     return true;
-
-    SystemNavigator.pop();
   }
 
   @override
@@ -74,6 +89,8 @@ class _MainScreenState extends State<MainScreen> {
     double fontSizeML = deviceSizeH * 0.02;
     double fontSizeL = deviceSizeH * 0.03;
 
+    _chartData = getChartData();
+
     return Scaffold(
       body: WillPopScope(
         onWillPop: onWillPop,
@@ -88,7 +105,6 @@ class _MainScreenState extends State<MainScreen> {
                 setState(() {
                   isEmpty ? isEmpty = !isEmpty : isEmpty = !isEmpty;
                   _chartData = getChartData();
-                  print(isEmpty.toString());
                 });
               },
               child: Container(
@@ -188,7 +204,7 @@ class _MainScreenState extends State<MainScreen> {
                               child: Row(
                                 children: [
                                   Text(
-                                    "강만두",
+                                    nick,
                                     style: TextStyle(
                                       fontSize: fontSizeM,
                                       fontWeight: FontWeight.bold,
@@ -308,27 +324,12 @@ class _MainScreenState extends State<MainScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  isEmpty
-                                      ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "0원",
-                                              style: TextStyle(
-                                                fontSize: fontSizeL,
-                                                fontWeight: FontWeight.bold,
-                                                color: const Color(0xFF474747),
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            NumberSlideAnimation(
-                                              number: money1,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      (money[0] != "0")
+                                          ? NumberSlideAnimation(
+                                              number: money[0],
                                               duration: const Duration(
                                                   milliseconds: 1500),
                                               curve: Curves.bounceIn,
@@ -337,17 +338,21 @@ class _MainScreenState extends State<MainScreen> {
                                                 fontWeight: FontWeight.bold,
                                                 color: const Color(0xFF474747),
                                               ),
-                                            ),
-                                            Text(
+                                            )
+                                          : const Text(""),
+                                      (money[0] != "0")
+                                          ? Text(
                                               ",",
                                               style: TextStyle(
                                                 fontSize: fontSizeL,
                                                 fontWeight: FontWeight.bold,
                                                 color: const Color(0xFF474747),
                                               ),
-                                            ),
-                                            NumberSlideAnimation(
-                                              number: money2,
+                                            )
+                                          : const Text(""),
+                                      (money[1] != "0")
+                                          ? NumberSlideAnimation(
+                                              number: money[1],
                                               duration: const Duration(
                                                   milliseconds: 1500),
                                               curve: Curves.bounceIn,
@@ -356,17 +361,21 @@ class _MainScreenState extends State<MainScreen> {
                                                 fontWeight: FontWeight.bold,
                                                 color: const Color(0xFF474747),
                                               ),
-                                            ),
-                                            Text(
+                                            )
+                                          : const Text(""),
+                                      (money[1] != "0")
+                                          ? Text(
                                               ",",
                                               style: TextStyle(
                                                 fontSize: fontSizeL,
                                                 fontWeight: FontWeight.bold,
                                                 color: const Color(0xFF474747),
                                               ),
-                                            ),
-                                            NumberSlideAnimation(
-                                              number: money3,
+                                            )
+                                          : const Text(""),
+                                      (money[2] != "0")
+                                          ? NumberSlideAnimation(
+                                              number: money[2],
                                               duration: const Duration(
                                                   milliseconds: 1750),
                                               curve: Curves.bounceIn,
@@ -375,17 +384,25 @@ class _MainScreenState extends State<MainScreen> {
                                                 fontWeight: FontWeight.bold,
                                                 color: const Color(0xFF474747),
                                               ),
-                                            ),
-                                            Text(
-                                              "원",
+                                            )
+                                          : Text(
+                                              "0",
                                               style: TextStyle(
                                                 fontSize: fontSizeL,
                                                 fontWeight: FontWeight.bold,
                                                 color: const Color(0xFF474747),
                                               ),
                                             ),
-                                          ],
+                                      Text(
+                                        "원",
+                                        style: TextStyle(
+                                          fontSize: fontSizeL,
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF474747),
                                         ),
+                                      ),
+                                    ],
+                                  ),
                                   const SizedBox(
                                     height: 7,
                                   ),
@@ -559,7 +576,7 @@ class _MainScreenState extends State<MainScreen> {
                                       ),
                                     )
                                   : Text(
-                                      "스낵",
+                                      category[0],
                                       style: TextStyle(
                                         fontSize: fontSizeL,
                                         fontWeight: FontWeight.bold,
@@ -582,14 +599,14 @@ class _MainScreenState extends State<MainScreen> {
                                   : Row(
                                       children: [
                                         Text(
-                                          "스낵을 ",
+                                          category[0] + "을 ",
                                           style: TextStyle(
                                             fontSize: fontSizeS,
                                             color: const Color(0xFF999999),
                                           ),
                                         ),
                                         Text(
-                                          "12",
+                                          bought[0].toString(),
                                           style: TextStyle(
                                             fontSize: fontSizeS,
                                             fontWeight: FontWeight.bold,
@@ -668,7 +685,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  isEmpty ? "-" : "스낵",
+                                                  isEmpty ? "-" : category[0],
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -682,7 +699,9 @@ class _MainScreenState extends State<MainScreen> {
                                                     Alignment.centerRight,
                                                 width: deviceSizeW * 0.1,
                                                 child: Text(
-                                                  isEmpty ? "0회" : "12회",
+                                                  isEmpty
+                                                      ? "0회"
+                                                      : bought[0] + "회",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -715,7 +734,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  isEmpty ? "-" : "냉동식품",
+                                                  isEmpty ? "-" : category[1],
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -729,7 +748,9 @@ class _MainScreenState extends State<MainScreen> {
                                                     Alignment.centerRight,
                                                 width: deviceSizeW * 0.1,
                                                 child: Text(
-                                                  isEmpty ? "0회" : "5회",
+                                                  isEmpty
+                                                      ? "0회"
+                                                      : bought[1] + "회",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -762,7 +783,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  isEmpty ? "-" : "생필품",
+                                                  isEmpty ? "-" : category[2],
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -776,7 +797,9 @@ class _MainScreenState extends State<MainScreen> {
                                                     Alignment.centerRight,
                                                 width: deviceSizeW * 0.1,
                                                 child: Text(
-                                                  isEmpty ? "0회" : "4회",
+                                                  isEmpty
+                                                      ? "0회"
+                                                      : bought[2] + "회",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -809,7 +832,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  isEmpty ? "-" : "기타",
+                                                  isEmpty ? "-" : categoryEtc,
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -823,7 +846,9 @@ class _MainScreenState extends State<MainScreen> {
                                                     Alignment.centerRight,
                                                 width: deviceSizeW * 0.1,
                                                 child: Text(
-                                                  isEmpty ? "0회" : "8회",
+                                                  isEmpty
+                                                      ? "0회"
+                                                      : bought[3] + "회",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -861,10 +886,10 @@ class _MainScreenState extends State<MainScreen> {
 
   List<DataForChart> getChartData() {
     final List<DataForChart> chartData = [
-      DataForChart('others', 8, const Color(0xFFD6D6D6)),
-      DataForChart('third', 4, const Color(0xFF979797)),
-      DataForChart('second', 5, const Color(0xFF6B6B6B)),
-      DataForChart('first', 12, const Color(0xFFFF833D)),
+      DataForChart('others', int.parse(bought[3]), const Color(0xFFD6D6D6)),
+      DataForChart('third', int.parse(bought[2]), const Color(0xFF979797)),
+      DataForChart('second', int.parse(bought[1]), const Color(0xFF6B6B6B)),
+      DataForChart('first', int.parse(bought[0]), const Color(0xFFFF833D)),
     ];
 
     final List<DataForChart> chartEmpty = [

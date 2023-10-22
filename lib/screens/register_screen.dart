@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
-
+import '/network/network.dart';
 import 'package:test_chart/screens/first_screen.dart';
 import 'package:test_chart/screens/login_screen.dart';
 
@@ -26,6 +26,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late bool checkEmail;
   late bool checkPass;
   late bool checkNick;
+
+  late String result;
+  String warningE = "";
+  String warningP = "";
+  String warningN = "";
+  String iconCorrect = "";
+
+  Register(data1, data2, data3) async {
+    Network network = Network();
+    result = await network.Register(data1, data2, data3);
+  }
 
   @override
   void initState() {
@@ -144,7 +155,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: deviceSizeW * 0.9 / 2,
                               alignment: Alignment.centerRight,
                               child: Text(
-                                isFirst ? "" : (checkEmail ? "" : "잘못된 형식이에요"),
+                                warningE,
                                 style: TextStyle(
                                   fontSize: fontSizeS,
                                   color: const Color(0xFFF57C75),
@@ -204,9 +215,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   (deviceSizeH * (0.005 / 2)),
                               child: SizedBox(
                                 height: isFirst ? 0 : deviceSizeH * 0.025,
-                                child: SvgPicture.asset(checkEmail
-                                    ? 'assets/images/svg/correct.svg'
-                                    : 'assets/images/svg/incorrect.svg'),
+                                child: SvgPicture.asset(iconCorrect),
                               ),
                             ),
                           ],
@@ -307,7 +316,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: deviceSizeW * 0.9 / 2,
                               alignment: Alignment.centerRight,
                               child: Text(
-                                isFirst ? "" : (checkPass ? "" : "잘못된 형식이에요"),
+                                warningP,
                                 style: TextStyle(
                                   fontSize: fontSizeS,
                                   color: const Color(0xFFF57C75),
@@ -396,7 +405,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: deviceSizeW * 0.9 / 2,
                               alignment: Alignment.centerRight,
                               child: Text(
-                                isFirst ? "" : (checkNick ? "" : "잘못된 형식이에요"),
+                                warningN,
                                 style: TextStyle(
                                   fontSize: fontSizeS,
                                   color: const Color(0xFFF57C75),
@@ -484,42 +493,65 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               password != "" &&
                               valPassword != "" &&
                               nickname != "")
-                          ? () {
-                              setState(() {});
+                          ? () async {
                               isFirst = false;
                               // 이메일
-                              print(ValRegisterForm().valEmail(email));
                               ValRegisterForm().valEmail(email)
                                   ? checkEmail = true
                                   : checkEmail = false;
+                              if (checkEmail == false) {
+                                warningE = "잘못된 형식입니다.";
+                                iconCorrect = 'assets/images/svg/incorrect.svg';
+                              } else {
+                                warningE = "";
+                                iconCorrect = 'assets/images/svg/correct.svg';
+                              }
                               // 비밀번호
-                              print(ValRegisterForm()
-                                  .valPassword(password, valPassword));
+
                               ValRegisterForm()
                                       .valPassword(password, valPassword)
                                   ? checkPass = true
                                   : checkPass = false;
+
+                              if (checkPass == false) {
+                                warningP = "잘못된 형식입니다.";
+                              } else {
+                                warningP = "";
+                              }
                               // 닉네임
-                              print(ValRegisterForm().valNickname(nickname));
+
                               ValRegisterForm().valNickname(nickname)
                                   ? checkNick = true
                                   : checkNick = false;
+                              if (checkNick == false) {
+                                warningN = "잘못된 형식입니다.";
+                              } else {
+                                warningN = "";
+                              }
+                              setState(() {});
                               if (checkEmail == true &&
                                   checkPass == true &&
                                   checkNick == true) {
-                                print("회원가입 올바르게 완료");
-                                Navigator.pop(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LoginScreen()),
-                                );
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const FirstScreen()),
-                                );
+                                await Register(email, password, email);
+                                if (result == "1") {
+                                  Navigator.pop(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginScreen()),
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const FirstScreen()),
+                                  );
+                                } else {
+                                  warningE = "중복된 이메일입니다.";
+                                  iconCorrect =
+                                      'assets/images/svg/incorrect.svg';
+                                  setState(() {});
+                                }
                               }
                             }
                           : null,
