@@ -23,9 +23,6 @@ class _CameraScreenState extends State<CameraScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
   List result = [];
-  List itemName = [];
-  List itemPrice = [];
-  List itemCount = [];
 
   bool showHelpPage = false;
   bool showRecoPage = false;
@@ -381,7 +378,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                               ),
                                             ),
                                             child: Text(
-                                              itemName.length.toString(),
+                                              result.length.toString(),
                                               style: TextStyle(
                                                 fontSize: fontSizeM,
                                                 fontWeight: FontWeight.bold,

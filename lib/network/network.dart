@@ -124,14 +124,45 @@ class Network {
     return result;
   }
 
-  Future<void> checkShopping(email, date) async {
-    var url = Uri.parse('$host/ch');
+  Future<List> checkShopping(email, date) async {
+    var url = Uri.parse('$host/calendarLoad');
     http.Response response = await http.post(
       url,
       body: {
-        'user_email': 'a@a.a',
+        'email': email,
         'date': date,
       },
     );
+    return json.decode(utf8.decode(response.bodyBytes))['result'];
+  }
+
+  Future<void> CartMakeList(
+      email, productName, productPrice, productAmount, totalPrice) async {
+    var url = Uri.parse('$host/cartMakeList');
+
+    var body = jsonEncode({
+      'email': email,
+      'product_name': productName,
+      'product_price': productPrice,
+      'product_amount': productAmount,
+      'total_price': totalPrice,
+    });
+    http.Response response = await http
+        .post(url, body: body, headers: {'content-type': 'application/json'});
+  }
+
+  Future<void> calendarDelete(idenNum) async {
+    var url = Uri.parse('$host/calendarDelete');
+    http.Response response = await http.post(url,
+        body: jsonEncode({'iden_num': idenNum}),
+        headers: {'content-type': 'application/json'});
+  }
+
+  Future<dynamic> calendarLoadDetail(idenNum) async {
+    var url = Uri.parse('$host/calendarLoadDetail');
+    http.Response response = await http.post(url,
+        body: jsonEncode({'iden_num': idenNum}),
+        headers: {'content-type': 'application/json'});
+    return json.decode(utf8.decode(response.bodyBytes))['result'];
   }
 }

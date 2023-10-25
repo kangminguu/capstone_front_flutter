@@ -1,10 +1,16 @@
+import 'dart:convert';
+import 'package:intl/intl.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
+import '../network/network.dart';
 
 import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:test_chart/screens/main_screen.dart';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -14,15 +20,38 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
+  String date = "";
   late double deviceSizeW;
   late double deviceSizeH;
+  Network network = Network();
 
-  bool isEmpty = false;
+  List shoppings = [];
+
+  FlutterSecureStorage storage = const FlutterSecureStorage();
+  dynamic userInfo;
 
   final DateTime _selectedDate = DateTime.now();
   String _selectedYear = DateTime.now().year.toString();
   String _selectedMonth = DateTime.now().month.toString();
   String _selectedDay = DateTime.now().day.toString();
+  Shopping_info(String date) async {
+    userInfo = await storage.read(key: 'login');
+    userInfo = jsonDecode(userInfo);
+    String email = userInfo['email'];
+
+    shoppings = await network.checkShopping(email, date);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await Shopping_info("$_selectedYear-$_selectedMonth-$_selectedDay");
+      print(shoppings);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -280,7 +309,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             SizedBox(
               height: deviceSizeH * 0.71,
-              child: isEmpty
+              child: shoppings.isEmpty
                   ? Opacity(
                       opacity: 0.5,
                       child: Column(
@@ -311,14 +340,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       scrollDirection: Axis.vertical,
                       child: Column(
                         children: [
-                          singleProductDetail(fontSizeM),
-                          singleProductDetail(fontSizeM),
-                          singleProductDetail(fontSizeM),
-                          singleProductDetail(fontSizeM),
-                          singleProductDetail(fontSizeM),
-                          singleProductDetail(fontSizeM),
-                          singleProductDetail(fontSizeM),
-                          singleProductDetail(fontSizeM),
+                          for (int i = 0; i < shoppings.length; i++)
+                            singleProductDetail(fontSizeM, i),
                         ],
                       ),
                     ),
@@ -329,7 +352,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
   }
 
-  Column singleProductDetail(double fontSizeM) {
+  Column singleProductDetail(double fontSizeM, int i) {
     return Column(
       children: [
         Container(
@@ -357,7 +380,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         Radius.circular(deviceSizeW * 0.03),
                       ),
                       child: Image.network(
-                        'https://sitem.ssgcdn.com/08/29/24/item/1000005242908_i1_1100.jpg',
+                        shoppings[i]['address'],
                         fit: BoxFit.fill,
                         height: deviceSizeW * 0.15,
                         width: deviceSizeW * 0.15,
@@ -377,7 +400,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           height: deviceSizeH * 0.07,
                           width: deviceSizeW * 0.345,
                           child: Text(
-                            "롯데 말랑카우 오리지널(70g)",
+                            shoppings[i]['product_name'],
                             overflow: TextOverflow.fade,
                             style: TextStyle(
                               fontSize: fontSizeM,
@@ -413,7 +436,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "2",
+                                      shoppings[i]['count'].toString(),
                                       style: TextStyle(
                                         fontSize: fontSizeM,
                                         fontWeight: FontWeight.bold,
@@ -448,7 +471,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "6,250",
+                                      NumberFormat(
+                                              '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                          .format(shoppings[i]['price']),
                                       style: TextStyle(
                                         fontSize: fontSizeM,
                                         fontWeight: FontWeight.bold,
@@ -525,11 +550,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         _selectedYear = value.year.toString();
                         _selectedMonth = value.month.toString();
                         _selectedDay = value.day.toString();
-                        if (value.day.toString() == '11') {
-                          isEmpty = false;
-                        } else {
-                          isEmpty = true;
-                        }
+                        date = "$_selectedYear-$_selectedMonth-$_selectedDate";
                       });
                     },
                     scrollViewOptions: const DatePickerScrollViewOptions(
@@ -549,7 +570,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   height: deviceSizeH * 0.06,
                   width: deviceSizeW * 0.7,
                   child: TextButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      await Shopping_info(date);
+                      setState(() {});
                       Navigator.pop(context);
                     },
                     style: TextButton.styleFrom(
