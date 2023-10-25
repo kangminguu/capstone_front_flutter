@@ -21,7 +21,7 @@ class Network {
     late dynamic result;
 
     var url = Uri.parse('$host/mainPage');
-    print('hi');
+
     http.Response response = await http.post(url, body: {'email': email});
     result = await json.decode(response.body);
     return result;
@@ -55,7 +55,7 @@ class Network {
         'userNickname': data3,
       },
     );
-    print(response.statusCode);
+
     result = await json.decode(response.body)['result'];
 
     return result;
@@ -124,8 +124,9 @@ class Network {
     return result;
   }
 
-  Future<List> checkShopping(email, date) async {
+  Future<dynamic> checkShopping(email, date) async {
     var url = Uri.parse('$host/calendarLoad');
+    late var result;
     http.Response response = await http.post(
       url,
       body: {
@@ -133,7 +134,9 @@ class Network {
         'date': date,
       },
     );
-    return json.decode(utf8.decode(response.bodyBytes))['result'];
+    result = json.decode(utf8.decode(response.bodyBytes));
+
+    return result;
   }
 
   Future<void> CartMakeList(

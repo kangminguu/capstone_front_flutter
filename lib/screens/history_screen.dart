@@ -25,21 +25,37 @@ class _HistoryScreenState extends State<HistoryScreen> {
   late double deviceSizeH;
   Network network = Network();
 
+  dynamic shoppings_dic = {};
   List shoppings = [];
 
   FlutterSecureStorage storage = const FlutterSecureStorage();
   dynamic userInfo;
 
-  final DateTime _selectedDate = DateTime.now();
+  DateTime _selectedDate = DateTime.now();
   String _selectedYear = DateTime.now().year.toString();
   String _selectedMonth = DateTime.now().month.toString();
   String _selectedDay = DateTime.now().day.toString();
+  int totalPrice = 0;
+  int totalCount = 0;
   Shopping_info(String date) async {
     userInfo = await storage.read(key: 'login');
     userInfo = jsonDecode(userInfo);
     String email = userInfo['email'];
 
-    shoppings = await network.checkShopping(email, date);
+    shoppings_dic = await network.checkShopping(email, date);
+    shoppings = shoppings_dic['result'];
+    print(shoppings);
+    setState(() {
+      totalPrice = 0;
+      totalCount = 0;
+      for (int i = 0; i < shoppings.length; i++) {
+        int k = shoppings[i]['price'];
+        int j = shoppings[i]['count'];
+
+        totalPrice = totalPrice + k;
+        totalCount = totalCount + j;
+      }
+    });
     setState(() {});
   }
 
@@ -49,7 +65,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
     super.initState();
     Future.delayed(Duration.zero, () async {
       await Shopping_info("$_selectedYear-$_selectedMonth-$_selectedDay");
-      print(shoppings);
     });
   }
 
@@ -165,9 +180,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               height: deviceSizeH * 0.06 - 1,
                               width: deviceSizeW * 0.2,
                               child: TextButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   selectDayDialog(
                                       context, fontSizeS, fontSizeM);
+                                  date =
+                                      "$_selectedYear-$_selectedMonth-$_selectedDay";
+                                  print(date);
+                                  setState(() {});
                                 },
                                 child: Text(
                                   "날짜 선택",
@@ -229,7 +248,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         Row(
                           children: [
                             Text(
-                              "12",
+                              totalCount.toString(),
                               style: TextStyle(
                                 fontSize: fontSizeM,
                                 fontWeight: FontWeight.bold,
@@ -265,7 +284,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         Row(
                           children: [
                             Text(
-                              "156,000",
+                              NumberFormat(
+                                      '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                  .format(totalPrice),
                               style: TextStyle(
                                   fontSize: fontSizeM,
                                   fontWeight: FontWeight.bold,
@@ -309,7 +330,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             SizedBox(
               height: deviceSizeH * 0.71,
-              child: shoppings.isEmpty
+              child: shoppings == []
                   ? Opacity(
                       opacity: 0.5,
                       child: Column(
@@ -550,7 +571,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         _selectedYear = value.year.toString();
                         _selectedMonth = value.month.toString();
                         _selectedDay = value.day.toString();
-                        date = "$_selectedYear-$_selectedMonth-$_selectedDate";
+                        if (_selectedMonth.length < 2) {
+                          _selectedMonth = "0$_selectedMonth";
+                        }
+                        if (_selectedDay.length < 2) {
+                          _selectedDay = "0$_selectedDay";
+                        }
+                        date = "$_selectedYear-$_selectedMonth-$_selectedDay";
+                        _selectedDate = DateTime.parse(date);
+                        print(_selectedDate.toString());
                       });
                     },
                     scrollViewOptions: const DatePickerScrollViewOptions(
@@ -571,7 +600,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   width: deviceSizeW * 0.7,
                   child: TextButton(
                     onPressed: () async {
-                      await Shopping_info(date);
+                      shoppings_dic = await Shopping_info(date);
                       setState(() {});
                       Navigator.pop(context);
                     },
