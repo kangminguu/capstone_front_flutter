@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:test_chart/main.dart';
 import 'package:test_chart/screens/detail_cart_screen.dart';
 import 'package:test_chart/screens/main_screen.dart';
+import '../network/network.dart';
 
 List<CameraDescription> _cameras = ProvideCamera().cameras;
 late CameraController controller;
@@ -20,10 +22,15 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
+  List result = [];
+  List itemName = [];
+  List itemPrice = [];
+  List itemCount = [];
 
   bool showHelpPage = false;
   bool showRecoPage = false;
 
+  Network network = Network();
   // late CameraController controller;
 
   late int imageCount;
@@ -32,7 +39,7 @@ class _CameraScreenState extends State<CameraScreen> {
   void initState() {
     controller = CameraController(
       _cameras[0],
-      ResolutionPreset.high,
+      ResolutionPreset.medium,
       enableAudio: false,
     );
 
@@ -67,15 +74,17 @@ class _CameraScreenState extends State<CameraScreen> {
     stopStearmController();
   }
 
-  imageStreamStart() {
+  imageStreamStart() async {
     if (controller.value.isInitialized) {
-      controller.startImageStream((image) {
+      controller.startImageStream((image) async {
         imageCount++;
-        if (imageCount % 30 == 0) {
+
+        if (imageCount % 90 == 0) {
           imageCount = 0;
-          print(image.planes[0].bytes);
-          print(image.planes[1].bytes);
-          print(image.planes[2].bytes);
+
+          result = await network.Detection(image.planes[0].bytes,
+              image.planes[1].bytes, image.planes[2].bytes);
+          setState(() {});
         }
       });
     }
@@ -245,7 +254,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                       alignment: Alignment.center,
                                       width: deviceSizeW * 0.4,
                                       child: Text(
-                                        "롯데 말랑카우 오리지널(70g)",
+                                        (result.isEmpty) ? "-" : result[0],
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                           fontSize: fontSizeM,
@@ -258,7 +267,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                       alignment: Alignment.center,
                                       width: deviceSizeW * 0.25,
                                       child: Text(
-                                        "3,380원",
+                                        (result.isEmpty) ? "" : result[1],
                                         style: TextStyle(
                                           fontSize: fontSizeM,
                                           fontWeight: FontWeight.bold,
@@ -288,7 +297,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                             alignment: Alignment.center,
                                             width: deviceSizeW * 0.05,
                                             child: Text(
-                                              "99",
+                                              (result.isEmpty) ? "" : result[2],
                                               style: TextStyle(
                                                 fontSize: fontSizeM,
                                                 fontWeight: FontWeight.bold,
@@ -372,7 +381,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                               ),
                                             ),
                                             child: Text(
-                                              "5",
+                                              itemName.length.toString(),
                                               style: TextStyle(
                                                 fontSize: fontSizeM,
                                                 fontWeight: FontWeight.bold,
@@ -748,17 +757,8 @@ class _CameraScreenState extends State<CameraScreen> {
                   scrollDirection: Axis.vertical,
                   child: Column(
                     children: [
-                      singleProduct(fontSizeM, fontSizeS),
-                      singleProduct(fontSizeM, fontSizeS),
-                      singleProduct(fontSizeM, fontSizeS),
-                      singleProduct(fontSizeM, fontSizeS),
-                      singleProduct(fontSizeM, fontSizeS),
-                      singleProduct(fontSizeM, fontSizeS),
-                      singleProduct(fontSizeM, fontSizeS),
-                      singleProduct(fontSizeM, fontSizeS),
-                      singleProduct(fontSizeM, fontSizeS),
-                      singleProduct(fontSizeM, fontSizeS),
-                      singleProduct(fontSizeM, fontSizeS),
+                      for (int i = 0; i < result.length; i++)
+                        singleProduct(fontSizeM, fontSizeS, result[i])
                     ],
                   ),
                 ),
@@ -982,7 +982,7 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Column singleProduct(double fontSizeM, fontSizeS) {
+  Column singleProduct(double fontSizeM, fontSizeS, dynamic product) {
     return Column(
       children: [
         SizedBox(
@@ -1014,7 +1014,7 @@ class _CameraScreenState extends State<CameraScreen> {
                     SizedBox(
                       width: deviceSizeW * 0.3,
                       child: Text(
-                        "롯데 말랑카우 오리지널(70g)",
+                        product[0],
                         overflow: TextOverflow.fade,
                         style: TextStyle(
                           fontSize: fontSizeM,
@@ -1030,7 +1030,8 @@ class _CameraScreenState extends State<CameraScreen> {
                 alignment: Alignment.center,
                 width: deviceSizeW * 0.25,
                 child: Text(
-                  "3,380원",
+                  NumberFormat('###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                      .format(product[1]),
                   style: TextStyle(
                     fontSize: fontSizeM,
                     fontWeight: FontWeight.bold,
@@ -1060,7 +1061,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       alignment: Alignment.center,
                       width: deviceSizeW * 0.05,
                       child: Text(
-                        "99",
+                        product[2].toString(),
                         style: TextStyle(
                           fontSize: fontSizeM,
                           fontWeight: FontWeight.bold,

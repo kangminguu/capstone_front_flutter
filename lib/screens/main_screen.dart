@@ -25,13 +25,23 @@ class _MainScreenState extends State<MainScreen> {
 
   late List<DataForChart> _chartData;
 
+  dynamic category_change = {
+    'milk_diaryProducts': '우유/유제품',
+    'mealKit_convenienceMeal': '밀키트/간편식',
+    'beverage': '음료',
+    'cannedFood': '통조림',
+    'noodles': '면류',
+    'seasoning_oil': '양념/오일',
+    'sweets_sancks': '스낵',
+    'householdGoods_tools': '공구'
+  };
   String nick = "";
   List money = ["0", "0", "0"];
   List category = ["", "", ""];
   String categoryEtc = "기타";
   List bought = ["0", "0", "0", "0"];
 
-  bool isEmpty = false;
+  late bool isEmpty;
   final storage = const FlutterSecureStorage();
 
   @override
@@ -89,7 +99,11 @@ class _MainScreenState extends State<MainScreen> {
     double fontSizeML = deviceSizeH * 0.02;
     double fontSizeL = deviceSizeH * 0.03;
 
+    (bought[0] == '0') ? isEmpty = true : isEmpty = false;
     _chartData = getChartData();
+
+    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+    print(isEmpty);
 
     return Scaffold(
       body: WillPopScope(
@@ -576,7 +590,7 @@ class _MainScreenState extends State<MainScreen> {
                                       ),
                                     )
                                   : Text(
-                                      category[0],
+                                      category_change[category[0]],
                                       style: TextStyle(
                                         fontSize: fontSizeL,
                                         fontWeight: FontWeight.bold,
@@ -599,7 +613,7 @@ class _MainScreenState extends State<MainScreen> {
                                   : Row(
                                       children: [
                                         Text(
-                                          category[0] + "을 ",
+                                          category_change[category[0]] + "을 ",
                                           style: TextStyle(
                                             fontSize: fontSizeS,
                                             color: const Color(0xFF999999),
@@ -685,7 +699,10 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  isEmpty ? "-" : category[0],
+                                                  isEmpty
+                                                      ? "-"
+                                                      : category_change[
+                                                          category[0]],
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -734,7 +751,10 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  isEmpty ? "-" : category[1],
+                                                  isEmpty
+                                                      ? "-"
+                                                      : category_change[
+                                                          category[1]],
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -783,7 +803,10 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  isEmpty ? "-" : category[2],
+                                                  isEmpty
+                                                      ? "-"
+                                                      : category_change[
+                                                          category[2]],
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:

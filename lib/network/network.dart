@@ -106,16 +106,17 @@ class Network {
     return result;
   }
 
-  Future<List> Detection(data1, data2, data3) async {
+  Future<dynamic> Detection(data1, data2, data3) async {
     var url = Uri.parse('$host/detection');
     List result;
     http.Response response = await http.post(
       url,
-      body: {
+      body: jsonEncode({
         'Y': data1,
         'U': data2,
         'V': data3,
-      },
+      }),
+      headers: {'content-type': 'application/json'},
     );
 
     result = json.decode(utf8.decode(response.bodyBytes))['result'];
