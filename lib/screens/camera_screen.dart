@@ -23,10 +23,14 @@ class _CameraScreenState extends State<CameraScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
   dynamic result_dic = {};
-  List result = [];
+  dynamic result = {};
   bool showHelpPage = false;
   bool showRecoPage = false;
 
+  List product_name = [];
+  List product_price = [];
+  List product_count = [];
+  List product_total = [];
   Network network = Network();
   // late CameraController controller;
 
@@ -82,6 +86,16 @@ class _CameraScreenState extends State<CameraScreen> {
           result_dic = await network.Detection(image.planes[0].bytes,
               image.planes[1].bytes, image.planes[2].bytes);
           result = result_dic['result'];
+          product_name = result['product_name'];
+          product_price = result['product_price'];
+          product_count = result['product_count'];
+          for (int i = 0; i < product_price.length; i++) {
+            int count = product_count[i];
+            int price = product_price[i];
+            int total = count * price;
+            print(total.toString());
+            product_total.add(total);
+          }
           setState(() {});
         }
       });
@@ -252,7 +266,9 @@ class _CameraScreenState extends State<CameraScreen> {
                                       alignment: Alignment.center,
                                       width: deviceSizeW * 0.4,
                                       child: Text(
-                                        (result.isEmpty) ? "-" : result[0][0],
+                                        (product_name.isEmpty)
+                                            ? "-"
+                                            : product_name[0],
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                           fontSize: fontSizeM,
@@ -265,11 +281,11 @@ class _CameraScreenState extends State<CameraScreen> {
                                       alignment: Alignment.center,
                                       width: deviceSizeW * 0.25,
                                       child: Text(
-                                        (result.isEmpty)
+                                        (product_price.isEmpty)
                                             ? ""
                                             : NumberFormat(
                                                     '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
-                                                .format(result[0][1]),
+                                                .format(product_total[0]),
                                         style: TextStyle(
                                           fontSize: fontSizeM,
                                           fontWeight: FontWeight.bold,
@@ -301,7 +317,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                             child: Text(
                                               (result.isEmpty)
                                                   ? ""
-                                                  : result[0][2].toString(),
+                                                  : product_count[0].toString(),
                                               style: TextStyle(
                                                 fontSize: fontSizeM,
                                                 fontWeight: FontWeight.bold,
@@ -761,8 +777,8 @@ class _CameraScreenState extends State<CameraScreen> {
                   scrollDirection: Axis.vertical,
                   child: Column(
                     children: [
-                      for (int i = 0; i < result.length; i++)
-                        singleProduct(fontSizeM, fontSizeS, result[i])
+                      for (int i = 0; i < product_name.length; i++)
+                        singleProduct(fontSizeM, fontSizeS, i)
                     ],
                   ),
                 ),
@@ -986,7 +1002,7 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Column singleProduct(double fontSizeM, fontSizeS, List product) {
+  Column singleProduct(double fontSizeM, fontSizeS, int i) {
     return Column(
       children: [
         SizedBox(
@@ -1018,7 +1034,7 @@ class _CameraScreenState extends State<CameraScreen> {
                     SizedBox(
                       width: deviceSizeW * 0.3,
                       child: Text(
-                        product[0],
+                        product_name[i],
                         overflow: TextOverflow.fade,
                         style: TextStyle(
                           fontSize: fontSizeM,
@@ -1035,7 +1051,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 width: deviceSizeW * 0.25,
                 child: Text(
                   NumberFormat('###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
-                      .format(product[1]),
+                      .format(product_total[i]),
                   style: TextStyle(
                     fontSize: fontSizeM,
                     fontWeight: FontWeight.bold,
@@ -1065,7 +1081,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       alignment: Alignment.center,
                       width: deviceSizeW * 0.05,
                       child: Text(
-                        product[2].toString(),
+                        product_count[i].toString(),
                         style: TextStyle(
                           fontSize: fontSizeM,
                           fontWeight: FontWeight.bold,
