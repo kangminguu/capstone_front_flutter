@@ -76,14 +76,14 @@ class Network {
     return result;
   }
 
-  Future<String> changeEmail(data1, data2) async {
+  Future<bool> changeEmail(data1, data2) async {
     var url = Uri.parse('$host/changeEmail');
-    String result = '';
+    late bool result;
     http.Response response = await http.post(
       url,
       body: {
-        'changeEmail': data1,
-        'email': data2,
+        'email': data1,
+        'newEmail': data2,
       },
     );
 
@@ -91,14 +91,29 @@ class Network {
     return result;
   }
 
-  Future<String> changeNickname(data1, data2) async {
-    var url = Uri.parse('$host/changeNick');
-    String result = '';
+  Future<bool> changePass(data1, data2) async {
+    var url = Uri.parse('$host/changePassword');
+    late bool result;
     http.Response response = await http.post(
       url,
       body: {
-        'changeNick': data1,
-        'email': data2,
+        'email': data1,
+        'password': data2,
+      },
+    );
+
+    result = json.decode(response.body)['result'];
+    return result;
+  }
+
+  Future<bool> changeNickname(data1, data2) async {
+    var url = Uri.parse('$host/changeNick');
+    late bool result;
+    http.Response response = await http.post(
+      url,
+      body: {
+        'email': data1,
+        'changeNick': data2,
       },
     );
 
@@ -106,9 +121,34 @@ class Network {
     return result;
   }
 
+  Future<bool> deleteHistory(email) async {
+    var url = Uri.parse('$host/deleteHistory');
+    late bool result;
+    http.Response response = await http.post(
+      url,
+      body: jsonEncode({'email': email}),
+      headers: {'content-type': 'application/json'},
+    );
+    result = json.decode(utf8.decode(response.bodyBytes))['result'];
+    return result;
+  }
+
+  Future<bool> deleteUser(email) async {
+    var url = Uri.parse('$host/deleteUser');
+    late bool result;
+    http.Response response = await http.post(
+      url,
+      body: jsonEncode({'email': email}),
+      headers: {'content-type': 'application/json'},
+    );
+    result = json.decode(utf8.decode(response.bodyBytes))['result'];
+    return result;
+  }
+
   Future<dynamic> Detection(data1, data2, data3, data4) async {
     var url = Uri.parse('$host/detection');
     late var result;
+    print(data4);
     http.Response response = await http.post(
       url,
       body: jsonEncode({
@@ -124,9 +164,30 @@ class Network {
     return json.decode(utf8.decode(response.bodyBytes));
   }
 
+  Future<bool> detailCart(email, name, count, total) async {
+    var url = Uri.parse('$host/detailCart');
+    late bool result;
+
+    http.Response response = await http.post(
+      url,
+      body: jsonEncode({
+        'email': email,
+        'product_name': name,
+        'product_count': count,
+        'product_total': total,
+      }),
+      headers: {'content-type': 'application/json'},
+    );
+    result = json.decode(utf8.decode(response.bodyBytes))['result'];
+
+    return result;
+  }
+
   Future<dynamic> checkShopping(email, date) async {
     var url = Uri.parse('$host/calendarLoad');
-    late var result;
+    late dynamic result;
+    print(email);
+    print(date);
     http.Response response = await http.post(
       url,
       body: {

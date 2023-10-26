@@ -7,6 +7,8 @@ import 'dart:math' as math;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:test_chart/screens/done_change_screen.dart';
+import 'package:test_chart/screens/mypage_screen.dart';
+import '../network/network.dart';
 
 class ChangeEmailScreen extends StatefulWidget {
   const ChangeEmailScreen({super.key});
@@ -19,23 +21,36 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
 
+  late String newEmail;
   String email = '';
-
+  late String password;
+  late String nick;
   late bool isFirst;
   late bool checkEmail;
+  late bool result;
+
+  Network network = Network();
+
+  Future<bool> changeEmail(email, newEmail) async {
+    return await network.changeEmail(email, newEmail);
+  }
+
+  late dynamic userInfo;
   FlutterSecureStorage storage = const FlutterSecureStorage();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero, () async {
-      late dynamic userInfo;
-      userInfo = storage.read(key: 'login');
+      userInfo = await storage.read(key: 'login');
       userInfo = jsonDecode(userInfo);
       email = userInfo['email'];
+      setState(() {});
     });
     isFirst = true;
     checkEmail = false;
+    setState(() {});
+    newEmail = "";
   }
 
   @override
@@ -168,7 +183,11 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                               width: deviceSizeW * 0.9 / 2,
                               alignment: Alignment.centerRight,
                               child: Text(
-                                isFirst ? "" : (checkEmail ? "" : "잘못된 형식이에요"),
+                                isFirst
+                                    ? ""
+                                    : (checkEmail
+                                        ? (result ? "" : "중복된 이메일이에요")
+                                        : "잘못된 형식이에요"),
                                 style: TextStyle(
                                   fontSize: fontSizeS,
                                   color: const Color(0xFFF57C75),
@@ -191,7 +210,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                               height: deviceSizeH * 0.06,
                               child: TextFormField(
                                 onChanged: (value) {
-                                  email = value;
+                                  newEmail = value;
                                 },
                                 decoration: InputDecoration(
                                   filled: true,
@@ -252,20 +271,38 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                     width: deviceSizeW * 0.9,
                     height: deviceSizeH * 0.06,
                     child: TextButton(
-                      onPressed: (email != "")
-                          ? () {
+                      onPressed: (newEmail != "")
+                          ? () async {
                               setState(() {});
+                              result = await changeEmail(email, newEmail);
+
                               isFirst = false;
-                              ValEmailForm().valEmail(email)
-                                  ? checkEmail = true
-                                  : checkEmail = false;
+                              result ? checkEmail = true : checkEmail = false;
                               if (checkEmail == true) {
+                                password = userInfo['password'];
+                                nick = userInfo['nickname'];
+                                storage.delete(key: 'login');
+                                storage.write(
+                                    key: 'login',
+                                    value: jsonEncode({
+                                      'email': newEmail,
+                                      'password': password,
+                                      'nickname': nick
+                                    }));
+
                                 Navigator.pop(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           const ChangeEmailScreen()),
                                 );
+                                Navigator.pop(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const MyPageScreen()),
+                                );
+
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

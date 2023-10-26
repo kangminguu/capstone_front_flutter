@@ -1,12 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:test_chart/screens/donce_delete_screen.dart';
 import 'dart:math' as math;
+import '../network/network.dart';
 
 import 'package:test_chart/screens/change_email_screen.dart';
 import 'package:test_chart/screens/change_nickname_screen.dart';
 import 'package:test_chart/screens/change_passcheck_screen.dart';
+import 'package:test_chart/screens/first_screen.dart';
 import 'package:test_chart/screens/main_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({super.key});
@@ -16,8 +22,36 @@ class MyPageScreen extends StatefulWidget {
 }
 
 class _MyPageScreenState extends State<MyPageScreen> {
+  Network network = Network();
   late double deviceSizeW;
   late double deviceSizeH;
+  late dynamic userInfo;
+  String email = '';
+  int password = 0;
+  String nick = '';
+  late bool result;
+  FlutterSecureStorage storage = const FlutterSecureStorage();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      userInfo = await storage.read(key: 'login');
+      userInfo = jsonDecode(userInfo);
+      email = userInfo['email'];
+      password = userInfo['password'].length;
+      nick = userInfo['nickname'];
+      setState(() {});
+    });
+  }
+
+  Future<bool> deleteHistory(email) async {
+    return await network.deleteHistory(email);
+  }
+
+  Future<bool> deleteUser(email) async {
+    return await network.deleteUser(email);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +165,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "kmindat9909@naver.com",
+                          email,
                           style: TextStyle(
                             fontSize: fontSizeM,
                             color: const Color(0xFF474747),
@@ -188,7 +222,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "************",
+                          "*" * password,
                           style: TextStyle(
                             fontSize: fontSizeM,
                             color: const Color(0xFF474747),
@@ -246,7 +280,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "강만두",
+                          nick,
                           style: TextStyle(
                             fontSize: fontSizeM,
                             color: const Color(0xFF474747),
@@ -528,7 +562,19 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         height: deviceSizeH * 0.06,
                         width: deviceSizeW * 0.35,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            storage.delete(key: 'login');
+                            Navigator.pop(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MyPageScreen()),
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const FirstScreen()),
+                            );
+                          },
                           style: TextButton.styleFrom(
                             backgroundColor: const Color(0x00F66262),
                           ),
@@ -624,7 +670,22 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         height: deviceSizeH * 0.06,
                         width: deviceSizeW * 0.35,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            result = await deleteHistory(email);
+                            if (result) {
+                              Navigator.pop(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MyPageScreen()),
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const DoneDeleteScreen()),
+                              );
+                            } else {}
+                          },
                           style: TextButton.styleFrom(
                             backgroundColor: const Color(0x00F66262),
                           ),
@@ -721,7 +782,22 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         height: deviceSizeH * 0.06,
                         width: deviceSizeW * 0.35,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            result = await deleteUser(email);
+                            if (result) {
+                              storage.delete(key: 'login');
+                              Navigator.pop(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MyPageScreen()),
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const FirstScreen()),
+                              );
+                            }
+                          },
                           style: TextButton.styleFrom(
                             backgroundColor: const Color(0x00F66262),
                           ),

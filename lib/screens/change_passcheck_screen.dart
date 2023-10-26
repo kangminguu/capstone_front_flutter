@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:test_chart/screens/change_password_screen.dart';
 
@@ -16,8 +19,10 @@ class _ChangePassCheckScreenState extends State<ChangePassCheckScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
 
+  FlutterSecureStorage storage = const FlutterSecureStorage();
+
+  late dynamic userInfo;
   late String password;
-  String correctPassword = "aaaa";
 
   late bool isFirst;
   late bool checkPassword;
@@ -26,7 +31,10 @@ class _ChangePassCheckScreenState extends State<ChangePassCheckScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    Future.delayed(Duration.zero, () async {
+      userInfo = await storage.read(key: 'login');
+      userInfo = jsonDecode(userInfo);
+    });
     password = "";
 
     isFirst = true;
@@ -224,7 +232,7 @@ class _ChangePassCheckScreenState extends State<ChangePassCheckScreen> {
                           ? () {
                               setState(() {});
                               isFirst = false;
-                              if (password == correctPassword) {
+                              if (password == userInfo['password']) {
                                 checkPassword = true;
                                 Navigator.pop(
                                   context,

@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
+import '../network/network.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:test_chart/screens/done_change_screen.dart';
 
@@ -15,23 +19,35 @@ class ChangePasswordScreen extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
-
+  Network network = Network();
   late String password;
   late String valPassword;
-
+  FlutterSecureStorage storage = const FlutterSecureStorage();
+  late dynamic userInfo;
   late bool isFirst;
   late bool checkPassword;
-
+  late String email;
+  late String nick;
+  late bool result;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    Future.delayed(Duration.zero, () async {
+      userInfo = await storage.read(key: 'login');
+      userInfo = jsonDecode(userInfo);
+      email = userInfo['email'];
+      nick = userInfo['nickname'];
+    });
     password = "";
     valPassword = "";
 
     isFirst = true;
     checkPassword = false;
+  }
+
+  Future<bool> changePass(email, pass) async {
+    return await network.changePass(email, pass);
   }
 
   @override
@@ -296,20 +312,30 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     height: deviceSizeH * 0.06,
                     child: TextButton(
                       onPressed: (password != "" && valPassword != "")
-                          ? () {
+                          ? () async {
                               setState(() {});
                               isFirst = false;
                               ValPasswordForm()
                                       .valPassword(password, valPassword)
                                   ? checkPassword = true
                                   : checkPassword = false;
-                              if (checkPassword == true) {
+                              result = await changePass(email, valPassword);
+                              if (checkPassword == true & result) {
+                                await storage.delete(key: 'login');
+                                await storage.write(
+                                    key: 'login',
+                                    value: jsonEncode({
+                                      'email': email,
+                                      'password': valPassword,
+                                      'nickname': nick
+                                    }));
                                 Navigator.pop(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           const ChangePasswordScreen()),
                                 );
+
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

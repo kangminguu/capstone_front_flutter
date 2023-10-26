@@ -53,6 +53,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
         totalPrice = totalPrice + k;
         totalCount = totalCount + j;
+        print(shoppings);
       }
     });
     setState(() {});
@@ -329,7 +330,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             SizedBox(
               height: deviceSizeH * 0.71,
-              child: shoppings == []
+              child: shoppings.isEmpty
                   ? Opacity(
                       opacity: 0.5,
                       child: Column(

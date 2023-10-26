@@ -13,7 +13,16 @@ List<CameraDescription> _cameras = ProvideCamera().cameras;
 late CameraController controller;
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key});
+  List productName;
+  List productPrice;
+  List productCount;
+  List productTotal;
+  List imageAddress;
+  num totalPrice;
+  int totalCount;
+  CameraScreen(this.productName, this.productPrice, this.productCount,
+      this.productTotal, this.totalPrice, this.totalCount, this.imageAddress,
+      {super.key});
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -24,6 +33,9 @@ class _CameraScreenState extends State<CameraScreen> {
   late double deviceSizeH;
   dynamic result_dic = {};
   dynamic result = {};
+  dynamic recommand = {};
+  String recommandProduct = "";
+  String recommandAddress = "";
   bool showHelpPage = false;
   bool showRecoPage = false;
 
@@ -31,6 +43,10 @@ class _CameraScreenState extends State<CameraScreen> {
   List product_price = [];
   List product_count = [];
   List product_total = [];
+  List imageAddress = [];
+  num totalPrice = 0;
+  String totalPriceStr = "0";
+  int totalCount = 0;
   Network network = Network();
   // late CameraController controller;
 
@@ -43,7 +59,22 @@ class _CameraScreenState extends State<CameraScreen> {
       ResolutionPreset.medium,
       enableAudio: false,
     );
+    for (int i = 0; i < widget.productName.length; i++) {
+      product_name.add(widget.productName[i]);
+      product_price.add(widget.productPrice[i]);
+      product_count.add(widget.productCount[i]);
+      imageAddress.add(widget.imageAddress[i]);
+      product_total.add(widget.productTotal[i]);
+    }
+    totalCount = widget.totalCount;
+    totalPrice = widget.totalPrice;
 
+    result = {
+      'product_name': widget.productName,
+      'product_price': widget.productPrice,
+      'product_count': widget.productCount,
+      'imageAddress': widget.imageAddress
+    };
     imageCount = 0;
 
     if (!controller.value.isInitialized) {
@@ -85,25 +116,32 @@ class _CameraScreenState extends State<CameraScreen> {
             result_dic = await network.Detection(image.planes[0].bytes,
                 image.planes[1].bytes, image.planes[2].bytes, result);
             result = result_dic['result'];
+            recommand = result_dic['recommand'];
+            recommandAddress = recommand['ImageAddress'];
+            recommandProduct = recommand['product_name'];
 
             for (int i = 0; i < result['product_name'].length; i += 1) {
-              print(i.toString());
               if (product_name.contains(result['product_name'][i]) == false) {
                 product_name.add(result['product_name'][i]);
                 product_count.add(result['product_count'][i]);
                 product_price.add(result['product_price'][i]);
-                print("$i-apapap");
+                imageAddress.add(result['imageAddress'][i]);
               }
             }
 
-            for (int i = 0; i < product_price.length; i++) {
+            for (int i = product_total.length; i < product_price.length; i++) {
               int count = product_count[i];
-
+              totalCount += count;
               int price = product_price[i];
               int total = count * price;
+              totalPrice += total;
+              totalPriceStr =
+                  NumberFormat('###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                      .format(totalPrice);
               print(total.toString());
               product_total.add(total);
             }
+
             setState(() {});
           }
         },
@@ -312,6 +350,18 @@ class _CameraScreenState extends State<CameraScreen> {
                                             child: IconButton(
                                               onPressed: () {
                                                 print("minus");
+                                                if (product_count[0] > 1) {
+                                                  product_count[0] -= 1;
+                                                  totalCount -= 1;
+                                                  product_total[0] -=
+                                                      product_price[0];
+                                                  totalPrice -=
+                                                      product_price[0];
+                                                  totalPriceStr = NumberFormat(
+                                                          '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                                      .format(totalPrice);
+                                                  setState(() {});
+                                                }
                                               },
                                               icon: SvgPicture.asset(
                                                 'assets/images/svg/btn_minus.svg',
@@ -339,6 +389,15 @@ class _CameraScreenState extends State<CameraScreen> {
                                             child: IconButton(
                                               onPressed: () {
                                                 print("plus");
+                                                product_count[0] += 1;
+                                                totalCount += 1;
+                                                product_total[0] +=
+                                                    product_price[0];
+                                                totalPrice += product_price[0];
+                                                totalPriceStr = NumberFormat(
+                                                        '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                                    .format(totalPrice);
+                                                setState(() {});
                                               },
                                               icon: SvgPicture.asset(
                                                 'assets/images/svg/btn_plus.svg',
@@ -359,15 +418,27 @@ class _CameraScreenState extends State<CameraScreen> {
                                     Navigator.pop(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const CameraScreen(),
+                                        builder: (context) => CameraScreen(
+                                            const [],
+                                            const [],
+                                            const [],
+                                            const [],
+                                            0,
+                                            0,
+                                            const []),
                                       ),
                                     );
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const DetailCartScreen(),
+                                        builder: (context) => DetailCartScreen(
+                                            product_name,
+                                            product_price,
+                                            product_count,
+                                            product_total,
+                                            totalPrice.toInt(),
+                                            totalCount,
+                                            imageAddress),
                                       ),
                                     );
                                   },
@@ -408,7 +479,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                               ),
                                             ),
                                             child: Text(
-                                              result.length.toString(),
+                                              totalCount.toString(),
                                               style: TextStyle(
                                                 fontSize: fontSizeM,
                                                 fontWeight: FontWeight.bold,
@@ -450,7 +521,14 @@ class _CameraScreenState extends State<CameraScreen> {
                             Navigator.pop(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const CameraScreen()),
+                                  builder: (context) => CameraScreen(
+                                      const [],
+                                      const [],
+                                      const [],
+                                      const [],
+                                      0,
+                                      0,
+                                      const [])),
                             );
                             Navigator.push(
                               context,
@@ -518,7 +596,9 @@ class _CameraScreenState extends State<CameraScreen> {
                                         Radius.circular(deviceSizeW * 0.03),
                                       ),
                                       child: Image.network(
-                                        'https://sitem.ssgcdn.com/63/97/26/item/1000026269763_i1_1100.jpg',
+                                        recommandAddress.isEmpty
+                                            ? 'https://sitem.ssgcdn.com/42/51/26/item/1000017265142_i1_1100.jpg'
+                                            : recommand['ImageAddress'],
                                         fit: BoxFit.fill,
                                         height: deviceSizeW * 0.15,
                                         width: deviceSizeW * 0.15,
@@ -563,7 +643,9 @@ class _CameraScreenState extends State<CameraScreen> {
                                             height: deviceSizeH * 0.05,
                                             width: deviceSizeW * 0.5,
                                             child: Text(
-                                              "하리보 골드 100pack(10kg)",
+                                              recommandAddress.isEmpty
+                                                  ? "하리보 골드"
+                                                  : recommand['product_name'],
                                               style: TextStyle(
                                                 fontSize: fontSizeM,
                                                 fontWeight: FontWeight.bold,
@@ -790,9 +872,6 @@ class _CameraScreenState extends State<CameraScreen> {
                             singleProduct(
                               fontSizeM,
                               fontSizeS,
-                              product_name[i],
-                              product_total[i],
-                              product_count[i],
                               i,
                               bottomState,
                             )
@@ -857,7 +936,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "12개",
+                          "$totalCount개",
                           style: TextStyle(
                             fontSize: fontSizeML,
                             fontWeight: FontWeight.bold,
@@ -865,7 +944,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           ),
                         ),
                         Text(
-                          "156,000원",
+                          totalPriceStr,
                           style: TextStyle(
                             fontSize: fontSizeML,
                             fontWeight: FontWeight.bold,
@@ -887,12 +966,26 @@ class _CameraScreenState extends State<CameraScreen> {
                         Navigator.pop(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CameraScreen()),
+                              builder: (context) => CameraScreen(
+                                  const [],
+                                  const [],
+                                  const [],
+                                  const [],
+                                  0,
+                                  0,
+                                  const [])),
                         );
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const DetailCartScreen(),
+                            builder: (context) => DetailCartScreen(
+                                product_name,
+                                product_price,
+                                product_count,
+                                product_total,
+                                totalPrice.toInt(),
+                                totalCount,
+                                imageAddress),
                           ),
                         );
                       },
@@ -925,8 +1018,8 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Future<dynamic> deleteDialog(
-      BuildContext context, double fontSizeS, double fontSizeM) {
+  Future<dynamic> deleteDialog(BuildContext context, double fontSizeS,
+      double fontSizeM, int i, bottomState) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -997,7 +1090,29 @@ class _CameraScreenState extends State<CameraScreen> {
                         height: deviceSizeH * 0.06,
                         width: deviceSizeW * 0.35,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            totalPrice = totalPrice -
+                                (product_price[i] * product_count[i]) as int;
+                            totalPriceStr = NumberFormat(
+                                    '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                .format(totalPrice);
+                            totalCount -= product_count[i] as int;
+                            product_total.removeAt(i);
+                            product_name.removeAt(i);
+                            product_price.removeAt(i);
+                            product_count.removeAt(i);
+                            imageAddress.removeAt(i);
+
+                            result = {
+                              'product_name': product_name,
+                              'product_price': product_price,
+                              'product_count': product_count,
+                              'imageAddress': imageAddress
+                            };
+                            bottomState(() {});
+                            setState(() {});
+                            Navigator.pop(context);
+                          },
                           style: TextButton.styleFrom(
                             backgroundColor: const Color(0x00F66262),
                           ),
@@ -1021,8 +1136,7 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Column singleProduct(double fontSizeM, fontSizeS, String name, int total,
-      count, i, bottomState) {
+  Column singleProduct(double fontSizeM, fontSizeS, int i, bottomState) {
     return Column(
       children: [
         SizedBox(
@@ -1041,7 +1155,8 @@ class _CameraScreenState extends State<CameraScreen> {
                       width: deviceSizeW * 0.08,
                       child: IconButton(
                         onPressed: () {
-                          deleteDialog(context, fontSizeS, fontSizeM);
+                          deleteDialog(
+                              context, fontSizeS, fontSizeM, i, bottomState);
                           bottomState(() {
                             setState(() {});
                           });
@@ -1094,6 +1209,16 @@ class _CameraScreenState extends State<CameraScreen> {
                       child: IconButton(
                         onPressed: () {
                           print("minus");
+                          if (product_count[i] > 1) {
+                            product_count[i] -= 1;
+                            totalCount -= 1;
+                            product_total[i] -= product_price[i];
+                            totalPrice -= product_price[i];
+                            totalPriceStr = NumberFormat(
+                                    '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                .format(totalPrice);
+                            bottomState(() {});
+                          }
                         },
                         icon: SvgPicture.asset(
                           'assets/images/svg/btn_minus.svg',
@@ -1118,7 +1243,16 @@ class _CameraScreenState extends State<CameraScreen> {
                       width: deviceSizeW * 0.1,
                       child: IconButton(
                         onPressed: () {
+                          product_count[i] += 1;
+                          product_total[i] =
+                              product_price[i] * product_count[i];
+                          totalCount += 1;
+                          totalPrice += product_price[i];
+                          totalPriceStr = NumberFormat(
+                                  '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                              .format(totalPrice);
                           print("plus");
+                          bottomState(() {});
                         },
                         icon: SvgPicture.asset(
                           'assets/images/svg/btn_plus.svg',

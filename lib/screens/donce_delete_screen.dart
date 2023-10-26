@@ -6,14 +6,14 @@ import 'package:test_chart/screens/mypage_screen.dart';
 
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 
-class DoneChangeScreen extends StatefulWidget {
-  const DoneChangeScreen({super.key});
+class DoneDeleteScreen extends StatefulWidget {
+  const DoneDeleteScreen({super.key});
 
   @override
-  State<DoneChangeScreen> createState() => _DoneChangeScreenState();
+  State<DoneDeleteScreen> createState() => _DoneDeleteScreenState();
 }
 
-class _DoneChangeScreenState extends State<DoneChangeScreen> {
+class _DoneDeleteScreenState extends State<DoneDeleteScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
 
@@ -23,7 +23,7 @@ class _DoneChangeScreenState extends State<DoneChangeScreen> {
     Timer(const Duration(milliseconds: 2500), () {
       Navigator.pop(
         context,
-        MaterialPageRoute(builder: (context) => const DoneChangeScreen()),
+        MaterialPageRoute(builder: (context) => const DoneDeleteScreen()),
       );
       Navigator.push(
         context,
@@ -83,7 +83,7 @@ class _DoneChangeScreenState extends State<DoneChangeScreen> {
               alignment: Alignment.center,
               width: deviceSizeW * 0.55,
               child: Text(
-                "변경이 완료되었습니다.",
+                "삭제가 완료되었습니다.",
                 style: TextStyle(
                   fontSize: fontSizeML,
                   color: const Color(0xFF474747),

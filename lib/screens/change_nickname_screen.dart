@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
 
 import 'package:test_chart/screens/done_change_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../network/network.dart';
 
 class ChangeNicknameScreen extends StatefulWidget {
   const ChangeNicknameScreen({super.key});
@@ -13,23 +17,40 @@ class ChangeNicknameScreen extends StatefulWidget {
 }
 
 class _ChangeNicknameScreenState extends State<ChangeNicknameScreen> {
+  FlutterSecureStorage storage = const FlutterSecureStorage();
+  Network network = Network();
+  late bool result;
   late double deviceSizeW;
   late double deviceSizeH;
-
+  late String email;
+  late String password;
+  String nick = "";
   late String nickname;
 
   late bool isFirst;
   late bool checkNickname;
+  late dynamic userInfo;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    Future.delayed(Duration.zero, () async {
+      userInfo = await storage.read(key: 'login');
+      userInfo = jsonDecode(userInfo);
+      email = userInfo['email'];
+      password = userInfo['password'];
+      nick = userInfo['nickname'];
+      setState(() {});
+    });
     nickname = "";
 
     isFirst = true;
     checkNickname = false;
+  }
+
+  Future<bool> changeNick(email, nick) async {
+    return await network.changeNickname(email, nick);
   }
 
   @override
@@ -134,7 +155,7 @@ class _ChangeNicknameScreenState extends State<ChangeNicknameScreen> {
                           top: deviceSizeH * 0.01,
                         ),
                         child: Text(
-                          "강만두",
+                          nick,
                           style: TextStyle(
                             fontSize: fontSizeM,
                             color: const Color(0xFF474747),
@@ -249,25 +270,36 @@ class _ChangeNicknameScreenState extends State<ChangeNicknameScreen> {
                     height: deviceSizeH * 0.06,
                     child: TextButton(
                       onPressed: (nickname != "")
-                          ? () {
+                          ? () async {
                               setState(() {});
                               isFirst = false;
                               ValNicknameForm().valNickname(nickname)
                                   ? checkNickname = true
                                   : checkNickname = false;
                               if (checkNickname == true) {
-                                Navigator.pop(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ChangeNicknameScreen()),
-                                );
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const DoneChangeScreen()),
-                                );
+                                result = await changeNick(email, nickname);
+                                if (result) {
+                                  storage.delete(key: 'login');
+                                  storage.write(
+                                      key: 'login',
+                                      value: jsonEncode({
+                                        'email': email,
+                                        'password': password,
+                                        'nickname': nickname
+                                      }));
+                                  Navigator.pop(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ChangeNicknameScreen()),
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const DoneChangeScreen()),
+                                  );
+                                }
                               }
                             }
                           : null,

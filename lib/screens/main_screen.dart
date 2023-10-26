@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -40,6 +40,7 @@ class _MainScreenState extends State<MainScreen> {
   List category = ["", "", ""];
   String categoryEtc = "기타";
   List bought = ["0", "0", "0", "0"];
+  int diff = 0;
 
   late bool isEmpty;
   final storage = const FlutterSecureStorage();
@@ -56,6 +57,7 @@ class _MainScreenState extends State<MainScreen> {
       category = result['category'];
       bought = result['bought'];
       nick = userInfo['nickname'];
+      diff = result['diff'];
       setState(() {});
     });
 
@@ -251,8 +253,14 @@ class _MainScreenState extends State<MainScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const CameraScreen(),
+                                        builder: (context) => CameraScreen(
+                                            const [],
+                                            const [],
+                                            const [],
+                                            const [],
+                                            0,
+                                            0,
+                                            const []),
                                       ),
                                     );
                                   },
@@ -437,7 +445,9 @@ class _MainScreenState extends State<MainScreen> {
                                               ),
                                             ),
                                             Text(
-                                              "1,000",
+                                              NumberFormat(
+                                                      '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                                  .format(diff),
                                               style: TextStyle(
                                                 fontSize: fontSizeS,
                                                 fontWeight: FontWeight.bold,

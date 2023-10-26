@@ -1,14 +1,29 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:test_chart/screens/camera_screen.dart';
 import 'dart:math' as math;
 import 'package:test_chart/screens/done_register_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../network/network.dart';
 
 // final CameraController controller = ProvideController().controller;
 
 class DetailCartScreen extends StatefulWidget {
-  const DetailCartScreen({super.key});
+  List product_name;
+  List product_price;
+  List product_count;
+  List product_total;
+  int totalPrice;
+  int totalCount;
+  List imageAddress;
+
+  DetailCartScreen(this.product_name, this.product_price, this.product_count,
+      this.product_total, this.totalPrice, this.totalCount, this.imageAddress,
+      {super.key});
 
   @override
   State<DetailCartScreen> createState() => _DetailCartScreenState();
@@ -17,6 +32,22 @@ class DetailCartScreen extends StatefulWidget {
 class _DetailCartScreenState extends State<DetailCartScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
+  List image = [];
+  late String email;
+  late dynamic userInfo;
+  late bool result;
+  Network network = Network();
+  FlutterSecureStorage storage = const FlutterSecureStorage();
+  @override
+  initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      userInfo = await storage.read(key: 'login');
+      userInfo = jsonDecode(userInfo);
+      email = userInfo['email'];
+      print(email);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +64,10 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
     double fontSizeM = deviceSizeH * 0.017;
     double fontSizeML = deviceSizeH * 0.02;
     double fontSizeL = deviceSizeH * 0.03;
+
+    Future<bool> detailCart(email, name, count, total) async {
+      return await network.detailCart(email, name, count, total);
+    }
 
     // default appbar height
     PreferredSize appBar = PreferredSize(
@@ -54,11 +89,20 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
               Navigator.pop(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const DetailCartScreen()),
+                    builder: (context) => DetailCartScreen(const [], const [],
+                        const [], const [], 0, 0, const [])),
               );
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const CameraScreen()),
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                        widget.product_name,
+                        widget.product_price,
+                        widget.product_count,
+                        widget.product_total,
+                        widget.totalPrice,
+                        widget.totalCount,
+                        widget.imageAddress)),
               );
             },
             icon: SvgPicture.asset(
@@ -162,7 +206,7 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "12",
+                                      widget.totalCount.toString(),
                                       style: TextStyle(
                                         fontSize: fontSizeM,
                                         fontWeight: FontWeight.bold,
@@ -198,7 +242,9 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "156,000",
+                                      NumberFormat(
+                                              '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                          .format(widget.totalPrice),
                                       style: TextStyle(
                                           fontSize: fontSizeM,
                                           fontWeight: FontWeight.bold,
@@ -240,15 +286,8 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
                         ),
                       ),
                     ),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
-                    singleProductDetail(fontSizeM),
+                    for (int i = 0; i < widget.product_name.length; i++)
+                      singleProductDetail(fontSizeM, i),
                   ],
                 ),
               ),
@@ -279,7 +318,7 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
                               ),
                             ),
                             Text(
-                              "12",
+                              widget.totalCount.toString(),
                               style: TextStyle(
                                 fontSize: fontSizeS,
                                 fontWeight: FontWeight.bold,
@@ -294,7 +333,9 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
                               ),
                             ),
                             Text(
-                              "156,000",
+                              NumberFormat(
+                                      '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                  .format(widget.totalPrice),
                               style: TextStyle(
                                 fontSize: fontSizeS,
                                 fontWeight: FontWeight.bold,
@@ -324,19 +365,24 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
                     height: deviceSizeH * 0.06,
                     width: deviceSizeW * 0.9,
                     child: TextButton(
-                      onPressed: () {
-                        Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const DetailCartScreen(),
-                          ),
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const DoneRegisterScreen(),
-                          ),
-                        );
+                      onPressed: () async {
+                        result = await detailCart(email, widget.product_name,
+                            widget.product_count, widget.product_total);
+                        if (result) {
+                          Navigator.pop(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailCartScreen(const [],
+                                  const [], const [], const [], 0, 0, const []),
+                            ),
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const DoneRegisterScreen(),
+                            ),
+                          );
+                        }
                       },
                       style: TextButton.styleFrom(
                         backgroundColor: const Color(0xFFFF833D),
@@ -367,7 +413,7 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
     );
   }
 
-  Column singleProductDetail(double fontSizeM) {
+  Column singleProductDetail(double fontSizeM, int i) {
     return Column(
       children: [
         Container(
@@ -394,7 +440,7 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
                       borderRadius:
                           BorderRadius.all(Radius.circular(deviceSizeW * 0.03)),
                       child: Image.network(
-                        'https://sitem.ssgcdn.com/08/29/24/item/1000005242908_i1_1100.jpg',
+                        widget.imageAddress[i],
                         fit: BoxFit.fill,
                         height: deviceSizeW * 0.15,
                         width: deviceSizeW * 0.15,
@@ -414,7 +460,7 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
                           height: deviceSizeH * 0.07,
                           width: deviceSizeW * 0.345,
                           child: Text(
-                            "롯데 말랑카우 오리지널(70g)",
+                            widget.product_name[i],
                             overflow: TextOverflow.fade,
                             style: TextStyle(
                               fontSize: fontSizeM,
@@ -450,7 +496,7 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "2",
+                                      widget.product_count[i].toString(),
                                       style: TextStyle(
                                         fontSize: fontSizeM,
                                         fontWeight: FontWeight.bold,
@@ -485,7 +531,9 @@ class _DetailCartScreenState extends State<DetailCartScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "6,250",
+                                      NumberFormat(
+                                              '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                          .format(widget.product_total[i]),
                                       style: TextStyle(
                                         fontSize: fontSizeM,
                                         fontWeight: FontWeight.bold,
