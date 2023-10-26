@@ -63,7 +63,7 @@ class _CameraScreenState extends State<CameraScreen> {
         }
       });
     }
-    // print(ProvideController().controller);
+
     // TODO: implement initState
     super.initState();
   }
@@ -93,10 +93,9 @@ class _CameraScreenState extends State<CameraScreen> {
             int count = product_count[i];
             int price = product_price[i];
             int total = count * price;
-            print(total.toString());
+
             product_total.add(total);
           }
-          setState(() {});
         }
       });
     }

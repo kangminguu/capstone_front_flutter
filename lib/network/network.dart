@@ -119,7 +119,6 @@ class Network {
       headers: {'content-type': 'application/json'},
     );
     result = json.decode(utf8.decode(response.bodyBytes));
-    print(result);
 
     return json.decode(utf8.decode(response.bodyBytes));
   }
