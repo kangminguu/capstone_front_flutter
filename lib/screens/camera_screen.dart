@@ -83,13 +83,18 @@ class _CameraScreenState extends State<CameraScreen> {
           if (imageCount % 90 == 0) {
             imageCount = 0;
             result_dic = await network.Detection(image.planes[0].bytes,
-                image.planes[1].bytes, image.planes[2].bytes);
+                image.planes[1].bytes, image.planes[2].bytes, result);
             result = result_dic['result'];
-            product_name = result['product_name'];
 
-            product_price = result['product_price'];
-
-            product_count = result['product_count'];
+            for (int i = 0; i < result['product_name'].length; i += 1) {
+              print(i.toString());
+              if (product_name.contains(result['product_name'][i]) == false) {
+                product_name.add(result['product_name'][i]);
+                product_count.add(result['product_count'][i]);
+                product_price.add(result['product_price'][i]);
+                print("$i-apapap");
+              }
+            }
 
             for (int i = 0; i < product_price.length; i++) {
               int count = product_count[i];
@@ -317,7 +322,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                             alignment: Alignment.center,
                                             width: deviceSizeW * 0.05,
                                             child: Text(
-                                              (result.isEmpty)
+                                              (product_count.isEmpty)
                                                   ? ""
                                                   : product_count[0].toString(),
                                               style: TextStyle(
@@ -785,6 +790,9 @@ class _CameraScreenState extends State<CameraScreen> {
                             singleProduct(
                               fontSizeM,
                               fontSizeS,
+                              product_name[i],
+                              product_total[i],
+                              product_count[i],
                               i,
                               bottomState,
                             )
@@ -1013,7 +1021,8 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Column singleProduct(double fontSizeM, fontSizeS, int i, bottomState) {
+  Column singleProduct(double fontSizeM, fontSizeS, String name, int total,
+      count, i, bottomState) {
     return Column(
       children: [
         SizedBox(

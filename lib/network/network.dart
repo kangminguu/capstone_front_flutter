@@ -106,7 +106,7 @@ class Network {
     return result;
   }
 
-  Future<dynamic> Detection(data1, data2, data3) async {
+  Future<dynamic> Detection(data1, data2, data3, data4) async {
     var url = Uri.parse('$host/detection');
     late var result;
     http.Response response = await http.post(
@@ -115,6 +115,7 @@ class Network {
         'Y': data1,
         'U': data2,
         'V': data3,
+        'result': data4,
       }),
       headers: {'content-type': 'application/json'},
     );

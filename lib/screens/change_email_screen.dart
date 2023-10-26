@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math' as math;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:test_chart/screens/done_change_screen.dart';
 
@@ -16,18 +19,21 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
 
-  late String email;
+  String email = '';
 
   late bool isFirst;
   late bool checkEmail;
-
+  FlutterSecureStorage storage = const FlutterSecureStorage();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    email = "";
-
+    Future.delayed(Duration.zero, () async {
+      late dynamic userInfo;
+      userInfo = storage.read(key: 'login');
+      userInfo = jsonDecode(userInfo);
+      email = userInfo['email'];
+    });
     isFirst = true;
     checkEmail = false;
   }
@@ -134,7 +140,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                           top: deviceSizeH * 0.01,
                         ),
                         child: Text(
-                          "kmindat9909@naver.com",
+                          email,
                           style: TextStyle(
                             fontSize: fontSizeM,
                             color: const Color(0xFF474747),
