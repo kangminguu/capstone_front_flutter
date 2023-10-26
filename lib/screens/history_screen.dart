@@ -44,7 +44,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     shoppings_dic = await network.checkShopping(email, date);
     shoppings = shoppings_dic['result'];
-    print(shoppings);
     setState(() {
       totalPrice = 0;
       totalCount = 0;
@@ -185,7 +184,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                       context, fontSizeS, fontSizeM);
                                   date =
                                       "$_selectedYear-$_selectedMonth-$_selectedDay";
-                                  print(date);
+
                                   setState(() {});
                                 },
                                 child: Text(
@@ -579,7 +578,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         }
                         date = "$_selectedYear-$_selectedMonth-$_selectedDay";
                         _selectedDate = DateTime.parse(date);
-                        print(_selectedDate.toString());
                       });
                     },
                     scrollViewOptions: const DatePickerScrollViewOptions(

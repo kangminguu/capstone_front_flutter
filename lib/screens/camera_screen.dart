@@ -22,8 +22,8 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
+  dynamic result_dic = {};
   List result = [];
-
   bool showHelpPage = false;
   bool showRecoPage = false;
 
@@ -79,8 +79,9 @@ class _CameraScreenState extends State<CameraScreen> {
         if (imageCount % 90 == 0) {
           imageCount = 0;
 
-          result = await network.Detection(image.planes[0].bytes,
+          result_dic = await network.Detection(image.planes[0].bytes,
               image.planes[1].bytes, image.planes[2].bytes);
+          result = result_dic['result'];
           setState(() {});
         }
       });
@@ -251,7 +252,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                       alignment: Alignment.center,
                                       width: deviceSizeW * 0.4,
                                       child: Text(
-                                        (result.isEmpty) ? "-" : result[0],
+                                        (result.isEmpty) ? "-" : result[0][0],
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                           fontSize: fontSizeM,
@@ -264,7 +265,11 @@ class _CameraScreenState extends State<CameraScreen> {
                                       alignment: Alignment.center,
                                       width: deviceSizeW * 0.25,
                                       child: Text(
-                                        (result.isEmpty) ? "" : result[1],
+                                        (result.isEmpty)
+                                            ? ""
+                                            : NumberFormat(
+                                                    '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                                .format(result[0][1]),
                                         style: TextStyle(
                                           fontSize: fontSizeM,
                                           fontWeight: FontWeight.bold,
@@ -294,7 +299,9 @@ class _CameraScreenState extends State<CameraScreen> {
                                             alignment: Alignment.center,
                                             width: deviceSizeW * 0.05,
                                             child: Text(
-                                              (result.isEmpty) ? "" : result[2],
+                                              (result.isEmpty)
+                                                  ? ""
+                                                  : result[0][2].toString(),
                                               style: TextStyle(
                                                 fontSize: fontSizeM,
                                                 fontWeight: FontWeight.bold,
@@ -979,7 +986,7 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Column singleProduct(double fontSizeM, fontSizeS, dynamic product) {
+  Column singleProduct(double fontSizeM, fontSizeS, List product) {
     return Column(
       children: [
         SizedBox(

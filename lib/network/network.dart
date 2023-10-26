@@ -108,7 +108,7 @@ class Network {
 
   Future<dynamic> Detection(data1, data2, data3) async {
     var url = Uri.parse('$host/detection');
-    List result;
+    late var result;
     http.Response response = await http.post(
       url,
       body: jsonEncode({
@@ -118,10 +118,10 @@ class Network {
       }),
       headers: {'content-type': 'application/json'},
     );
+    result = json.decode(utf8.decode(response.bodyBytes));
+    print(result);
 
-    result = json.decode(utf8.decode(response.bodyBytes))['result'];
-
-    return result;
+    return json.decode(utf8.decode(response.bodyBytes));
   }
 
   Future<dynamic> checkShopping(email, date) async {

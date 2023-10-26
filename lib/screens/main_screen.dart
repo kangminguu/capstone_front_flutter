@@ -102,9 +102,6 @@ class _MainScreenState extends State<MainScreen> {
     (bought[0] == '0') ? isEmpty = true : isEmpty = false;
     _chartData = getChartData();
 
-    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
-    print(isEmpty);
-
     return Scaffold(
       body: WillPopScope(
         onWillPop: onWillPop,
