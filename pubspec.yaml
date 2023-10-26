@@ -42,6 +42,9 @@ dependencies:
   http:
   # http 통신
 
+  provider: ^6.0.5
+  # provider
+
   flutter_secure_storage:
 dev_dependencies:
   flutter_test:
