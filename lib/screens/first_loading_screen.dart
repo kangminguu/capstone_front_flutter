@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:test_chart/screens/first_screen.dart';
+import 'package:test_chart/screens/main_screen.dart';
 
 class FirstLoadingScreen extends StatefulWidget {
   const FirstLoadingScreen({super.key});
@@ -15,14 +17,33 @@ class _FirstLoadingScreenState extends State<FirstLoadingScreen> {
   late double deviceSizeW;
   late double deviceSizeH;
 
+  final storage = const FlutterSecureStorage();
+  dynamic userInfo = '';
+
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 2), () {
-      Navigator.pop(context,
-          MaterialPageRoute(builder: (context) => const FirstLoadingScreen()));
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const FirstScreen()));
+    Future.delayed(Duration.zero, () async {
+      userInfo = await storage.read(key: 'login');
+      if (userInfo != null) {
+        Timer(const Duration(seconds: 2), () {
+          Navigator.pop(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const FirstLoadingScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const MainScreen()));
+        });
+      } else {
+        Timer(const Duration(seconds: 2), () {
+          Navigator.pop(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const FirstLoadingScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const FirstScreen()));
+        });
+      }
     });
   }
 

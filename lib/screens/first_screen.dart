@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:test_chart/screens/login_screen.dart';
-import 'package:test_chart/screens/main_screen.dart';
 import 'package:test_chart/screens/register_screen.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
@@ -16,45 +14,23 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> {
-  final storage = const FlutterSecureStorage();
-
   late double deviceSizeW;
   late double deviceSizeH;
 
   bool aniVisible = false;
   bool aniVisible02 = false;
 
-  dynamic userInfo = '';
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration.zero, () async {
-      userInfo = await storage.read(key: 'login');
-      if (userInfo != null) {
-        Navigator.pop(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const FirstScreen(),
-          ),
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const MainScreen(),
-          ),
-        );
-      } else {
-        Timer(const Duration(milliseconds: 1), () {
-          aniVisible = true;
-          setState(() {});
-        });
-        Timer(const Duration(milliseconds: 1001), () {
-          aniVisible02 = true;
-          setState(() {});
-        });
-      }
+    Timer(const Duration(milliseconds: 1), () {
+      aniVisible = true;
+      setState(() {});
+    });
+    Timer(const Duration(milliseconds: 1001), () {
+      aniVisible02 = true;
+      setState(() {});
     });
   }
 
