@@ -82,6 +82,7 @@ class _CameraScreenState extends State<CameraScreen> {
         if (!mounted) {
           return;
         }
+
         setState(() {});
         imageStreamStart();
       }).catchError((Object e) {
@@ -332,7 +333,8 @@ class _CameraScreenState extends State<CameraScreen> {
                                         child: Text(
                                           (product_name.isEmpty)
                                               ? "-"
-                                              : product_name[0],
+                                              : product_name[
+                                                  product_count.length - 1],
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                             fontSize: fontSizeM,
@@ -349,7 +351,9 @@ class _CameraScreenState extends State<CameraScreen> {
                                               ? ""
                                               : NumberFormat(
                                                       '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
-                                                  .format(product_total[0]),
+                                                  .format(product_total[
+                                                      product_count.length -
+                                                          1]),
                                           style: TextStyle(
                                             fontSize: fontSizeM,
                                             fontWeight: FontWeight.bold,
@@ -369,13 +373,22 @@ class _CameraScreenState extends State<CameraScreen> {
                                               child: IconButton(
                                                 onPressed: () {
                                                   print("minus");
-                                                  if (product_count[0] > 1) {
-                                                    product_count[0] -= 1;
+                                                  if (product_count[
+                                                          product_count.length -
+                                                              1] >
+                                                      1) {
+                                                    product_count[
+                                                        product_count.length -
+                                                            1] -= 1;
                                                     totalCount -= 1;
-                                                    product_total[0] -=
-                                                        product_price[0];
-                                                    totalPrice -=
-                                                        product_price[0];
+                                                    product_total[
+                                                        product_count.length -
+                                                            1] -= product_price[
+                                                        product_count.length -
+                                                            1];
+                                                    totalPrice -= product_price[
+                                                        product_count.length -
+                                                            1];
                                                     totalPriceStr = NumberFormat(
                                                             '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
                                                         .format(totalPrice);
@@ -410,12 +423,16 @@ class _CameraScreenState extends State<CameraScreen> {
                                               child: IconButton(
                                                 onPressed: () {
                                                   print("plus");
-                                                  product_count[0] += 1;
+                                                  product_count[
+                                                      product_count.length -
+                                                          1] += 1;
                                                   totalCount += 1;
-                                                  product_total[0] +=
-                                                      product_price[0];
-                                                  totalPrice +=
-                                                      product_price[0];
+                                                  product_total[
+                                                      product_count.length -
+                                                          1] += product_price[
+                                                      product_count.length - 1];
+                                                  totalPrice += product_price[
+                                                      product_count.length - 1];
                                                   totalPriceStr = NumberFormat(
                                                           '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
                                                       .format(totalPrice);
@@ -895,7 +912,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       scrollDirection: Axis.vertical,
                       child: Column(
                         children: [
-                          for (int i = 0; i < product_name.length; i++)
+                          for (int i = product_count.length - 1; i > -1; i--)
                             singleProduct(
                               fontSizeM,
                               fontSizeS,

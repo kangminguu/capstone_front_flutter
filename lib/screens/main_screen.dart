@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
     'cannedFood': '통조림',
     'noodles': '면류',
     'seasoning_oil': '양념/오일',
-    'sweets_sancks': '스낵',
+    'sweets_snacks': '스낵',
     'householdGoods_tools': '공구'
   };
   String nick = "";
@@ -727,7 +727,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 width: deviceSizeW * 0.1,
                                                 child: Text(
                                                   isEmpty
-                                                      ? "0회"
+                                                      ? "-"
                                                       : bought[0] + "회",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
@@ -761,7 +761,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  isEmpty
+                                                  bought[1] == "0"
                                                       ? "-"
                                                       : category_change[
                                                           category[1]],
@@ -778,8 +778,8 @@ class _MainScreenState extends State<MainScreen> {
                                                     Alignment.centerRight,
                                                 width: deviceSizeW * 0.1,
                                                 child: Text(
-                                                  isEmpty
-                                                      ? "0회"
+                                                  bought[1] == "0"
+                                                      ? "-"
                                                       : bought[1] + "회",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
@@ -813,7 +813,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  isEmpty
+                                                  bought[2] == "0"
                                                       ? "-"
                                                       : category_change[
                                                           category[2]],
@@ -830,8 +830,8 @@ class _MainScreenState extends State<MainScreen> {
                                                     Alignment.centerRight,
                                                 width: deviceSizeW * 0.1,
                                                 child: Text(
-                                                  isEmpty
-                                                      ? "0회"
+                                                  bought[2] == "0"
+                                                      ? "-"
                                                       : bought[2] + "회",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
