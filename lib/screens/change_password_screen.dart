@@ -161,6 +161,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 onChanged: (value) {
                                   password = value;
                                 },
+                                obscureText: true,
+                                keyboardType: TextInputType.multiline,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: const Color(0xFFF2F4F6),
@@ -252,6 +254,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 onChanged: (value) {
                                   valPassword = value;
                                 },
+                                obscureText: true,
+                                keyboardType: TextInputType.multiline,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: const Color(0xFFF2F4F6),

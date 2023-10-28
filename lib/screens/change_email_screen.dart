@@ -212,6 +212,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                                 onChanged: (value) {
                                   newEmail = value;
                                 },
+                                keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: const Color(0xFFF2F4F6),

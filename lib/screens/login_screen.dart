@@ -162,6 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onChanged: (value) {
                                   email = value;
                                 },
+                                keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: const Color(0xFFF2F4F6),
@@ -225,6 +226,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onChanged: (value) {
                                   password = value;
                                 },
+                                obscureText: true,
+                                keyboardType: TextInputType.multiline,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: const Color(0xFFF2F4F6),

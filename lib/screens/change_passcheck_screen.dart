@@ -169,6 +169,8 @@ class _ChangePassCheckScreenState extends State<ChangePassCheckScreen> {
                                 onChanged: (value) {
                                   password = value;
                                 },
+                                obscureText: true,
+                                keyboardType: TextInputType.multiline,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: const Color(0xFFF2F4F6),

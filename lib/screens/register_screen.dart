@@ -180,6 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 onChanged: (value) {
                                   email = value;
                                 },
+                                keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: const Color(0xFFF2F4F6),
@@ -252,6 +253,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 onChanged: (value) {
                                   password = value;
                                 },
+                                obscureText: true,
+                                keyboardType: TextInputType.multiline,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: const Color(0xFFF2F4F6),
@@ -341,6 +344,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 onChanged: (value) {
                                   valPassword = value;
                                 },
+                                obscureText: true,
+                                keyboardType: TextInputType.multiline,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: const Color(0xFFF2F4F6),
@@ -430,6 +435,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 onChanged: (value) {
                                   nickname = value;
                                 },
+                                keyboardType: TextInputType.multiline,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: const Color(0xFFF2F4F6),
@@ -532,7 +538,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               if (checkEmail == true &&
                                   checkPass == true &&
                                   checkNick == true) {
-                                await Register(email, password, email);
+                                await Register(email, password, nickname);
                                 if (result == "1") {
                                   Navigator.pop(
                                     context,

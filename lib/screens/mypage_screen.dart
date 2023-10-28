@@ -109,382 +109,401 @@ class _MyPageScreenState extends State<MyPageScreen> {
     // 상단 상태바 빼고 높이
     deviceSizeH = deviceSizeH - appBar.preferredSize.height;
 
-    return Scaffold(
-      appBar: appBar,
-      body: Container(
-        height: deviceSizeH,
-        width: deviceSizeW,
-        color: const Color(0xFFF2F4F6),
-        child: Column(
-          children: [
-            Container(
-              height: deviceSizeH * 0.03,
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              height: deviceSizeH * 0.05,
-              width: deviceSizeW * 0.8,
-              child: Text(
-                "내 정보 변경",
-                style: TextStyle(
-                  fontSize: fontSizeML,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF474747),
+    Future<bool> onWillPop() async {
+      Navigator.pop(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MyPageScreen(),
+        ),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MainScreen(),
+        ),
+      );
+      return true;
+    }
+
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: Scaffold(
+        appBar: appBar,
+        body: Container(
+          height: deviceSizeH,
+          width: deviceSizeW,
+          color: const Color(0xFFF2F4F6),
+          child: Column(
+            children: [
+              Container(
+                height: deviceSizeH * 0.03,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                height: deviceSizeH * 0.05,
+                width: deviceSizeW * 0.8,
+                child: Text(
+                  "내 정보 변경",
+                  style: TextStyle(
+                    fontSize: fontSizeML,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF474747),
+                  ),
                 ),
               ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius:
-                    BorderRadius.all(Radius.circular(deviceSizeW * 0.05)),
-              ),
-              height: deviceSizeH * 0.3,
-              width: deviceSizeW * 0.9,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: deviceSizeH * 0.015,
-                  ),
-                  Container(
-                    alignment: Alignment.bottomLeft,
-                    height: deviceSizeH * 0.03,
-                    width: deviceSizeW * 0.8,
-                    child: Text(
-                      "이메일",
-                      style: TextStyle(
-                        fontSize: fontSizeS,
-                        color: const Color(0xFF999999),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(deviceSizeW * 0.05)),
+                ),
+                height: deviceSizeH * 0.3,
+                width: deviceSizeW * 0.9,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: deviceSizeH * 0.015,
+                    ),
+                    Container(
+                      alignment: Alignment.bottomLeft,
+                      height: deviceSizeH * 0.03,
+                      width: deviceSizeW * 0.8,
+                      child: Text(
+                        "이메일",
+                        style: TextStyle(
+                          fontSize: fontSizeS,
+                          color: const Color(0xFF999999),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: deviceSizeH * 0.06,
-                    width: deviceSizeW * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          email,
-                          style: TextStyle(
-                            fontSize: fontSizeM,
-                            color: const Color(0xFF474747),
+                    SizedBox(
+                      height: deviceSizeH * 0.06,
+                      width: deviceSizeW * 0.8,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            email,
+                            style: TextStyle(
+                              fontSize: fontSizeM,
+                              color: const Color(0xFF474747),
+                            ),
                           ),
+                          SizedBox(
+                            height: deviceSizeH * 0.045,
+                            width: deviceSizeW * 0.15,
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ChangeEmailScreen()),
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFFF2F4F6),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(deviceSizeW * 0.03),
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                "변경",
+                                style: TextStyle(
+                                  fontSize: fontSizeS,
+                                  color: const Color(0xFF474747),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.bottomLeft,
+                      height: deviceSizeH * 0.03,
+                      width: deviceSizeW * 0.8,
+                      child: Text(
+                        "비밀번호",
+                        style: TextStyle(
+                          fontSize: fontSizeS,
+                          color: const Color(0xFF999999),
                         ),
-                        SizedBox(
-                          height: deviceSizeH * 0.045,
-                          width: deviceSizeW * 0.15,
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
+                      ),
+                    ),
+                    SizedBox(
+                      height: deviceSizeH * 0.06,
+                      width: deviceSizeW * 0.8,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "*" * password,
+                            style: TextStyle(
+                              fontSize: fontSizeM,
+                              color: const Color(0xFF474747),
+                            ),
+                          ),
+                          SizedBox(
+                            height: deviceSizeH * 0.045,
+                            width: deviceSizeW * 0.15,
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
                                     builder: (context) =>
-                                        const ChangeEmailScreen()),
-                              );
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFFF2F4F6),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(deviceSizeW * 0.03),
+                                        const ChangePassCheckScreen(),
+                                  ),
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFFF2F4F6),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(deviceSizeW * 0.03),
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                "변경",
+                                style: TextStyle(
+                                  fontSize: fontSizeS,
+                                  color: const Color(0xFF474747),
                                 ),
                               ),
                             ),
-                            child: Text(
-                              "변경",
-                              style: TextStyle(
-                                fontSize: fontSizeS,
-                                color: const Color(0xFF474747),
-                              ),
-                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.bottomLeft,
-                    height: deviceSizeH * 0.03,
-                    width: deviceSizeW * 0.8,
-                    child: Text(
-                      "비밀번호",
-                      style: TextStyle(
-                        fontSize: fontSizeS,
-                        color: const Color(0xFF999999),
+                        ],
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: deviceSizeH * 0.06,
-                    width: deviceSizeW * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "*" * password,
-                          style: TextStyle(
-                            fontSize: fontSizeM,
-                            color: const Color(0xFF474747),
-                          ),
+                    Container(
+                      alignment: Alignment.bottomLeft,
+                      height: deviceSizeH * 0.03,
+                      width: deviceSizeW * 0.8,
+                      child: Text(
+                        "닉네임",
+                        style: TextStyle(
+                          fontSize: fontSizeS,
+                          color: const Color(0xFF999999),
                         ),
-                        SizedBox(
-                          height: deviceSizeH * 0.045,
-                          width: deviceSizeW * 0.15,
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ChangePassCheckScreen(),
-                                ),
-                              );
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFFF2F4F6),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(deviceSizeW * 0.03),
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              "변경",
-                              style: TextStyle(
-                                fontSize: fontSizeS,
-                                color: const Color(0xFF474747),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.bottomLeft,
-                    height: deviceSizeH * 0.03,
-                    width: deviceSizeW * 0.8,
-                    child: Text(
-                      "닉네임",
-                      style: TextStyle(
-                        fontSize: fontSizeS,
-                        color: const Color(0xFF999999),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: deviceSizeH * 0.06,
-                    width: deviceSizeW * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          nick,
-                          style: TextStyle(
-                            fontSize: fontSizeM,
-                            color: const Color(0xFF474747),
+                    SizedBox(
+                      height: deviceSizeH * 0.06,
+                      width: deviceSizeW * 0.8,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            nick,
+                            style: TextStyle(
+                              fontSize: fontSizeM,
+                              color: const Color(0xFF474747),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: deviceSizeH * 0.045,
-                          width: deviceSizeW * 0.15,
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ChangeNicknameScreen(),
+                          SizedBox(
+                            height: deviceSizeH * 0.045,
+                            width: deviceSizeW * 0.15,
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ChangeNicknameScreen(),
+                                  ),
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFFF2F4F6),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(deviceSizeW * 0.03),
+                                  ),
                                 ),
-                              );
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFFF2F4F6),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(deviceSizeW * 0.03),
+                              ),
+                              child: Text(
+                                "변경",
+                                style: TextStyle(
+                                  fontSize: fontSizeS,
+                                  color: const Color(0xFF474747),
                                 ),
                               ),
                             ),
-                            child: Text(
-                              "변경",
-                              style: TextStyle(
-                                fontSize: fontSizeS,
-                                color: const Color(0xFF474747),
-                              ),
-                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              height: deviceSizeH * 0.03,
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              height: deviceSizeH * 0.05,
-              width: deviceSizeW * 0.8,
-              child: Text(
-                "시스템",
-                style: TextStyle(
-                  fontSize: fontSizeML,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF474747),
+                  ],
                 ),
               ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(deviceSizeW * 0.05),
+              Container(
+                height: deviceSizeH * 0.03,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                height: deviceSizeH * 0.05,
+                width: deviceSizeW * 0.8,
+                child: Text(
+                  "시스템",
+                  style: TextStyle(
+                    fontSize: fontSizeML,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF474747),
+                  ),
                 ),
               ),
-              height: deviceSizeH * 0.27,
-              width: deviceSizeW * 0.9,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: deviceSizeH * 0.015,
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(deviceSizeW * 0.05),
                   ),
-                  SizedBox(
-                    height: deviceSizeH * 0.06,
-                    width: deviceSizeW * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "로그아웃",
-                          style: TextStyle(
-                            fontSize: fontSizeM,
-                            color: const Color(0xFF474747),
+                ),
+                height: deviceSizeH * 0.27,
+                width: deviceSizeW * 0.9,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: deviceSizeH * 0.015,
+                    ),
+                    SizedBox(
+                      height: deviceSizeH * 0.06,
+                      width: deviceSizeW * 0.8,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "로그아웃",
+                            style: TextStyle(
+                              fontSize: fontSizeM,
+                              color: const Color(0xFF474747),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: deviceSizeH * 0.045,
-                          width: deviceSizeW * 0.15,
-                          child: TextButton(
-                            onPressed: () {
-                              logoutDialog(context, fontSizeS, fontSizeM);
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFFF2F4F6),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(deviceSizeW * 0.03),
+                          SizedBox(
+                            height: deviceSizeH * 0.045,
+                            width: deviceSizeW * 0.15,
+                            child: TextButton(
+                              onPressed: () {
+                                logoutDialog(context, fontSizeS, fontSizeM);
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFFF2F4F6),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(deviceSizeW * 0.03),
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                "확인",
+                                style: TextStyle(
+                                  fontSize: fontSizeS,
+                                  color: const Color(0xFF474747),
                                 ),
                               ),
                             ),
-                            child: Text(
-                              "확인",
-                              style: TextStyle(
-                                fontSize: fontSizeS,
-                                color: const Color(0xFF474747),
-                              ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: deviceSizeH * 0.03,
+                    ),
+                    SizedBox(
+                      height: deviceSizeH * 0.06,
+                      width: deviceSizeW * 0.8,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "전체 기록 삭제",
+                            style: TextStyle(
+                              fontSize: fontSizeM,
+                              color: const Color(0xFF474747),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: deviceSizeH * 0.03,
-                  ),
-                  SizedBox(
-                    height: deviceSizeH * 0.06,
-                    width: deviceSizeW * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "전체 기록 삭제",
-                          style: TextStyle(
-                            fontSize: fontSizeM,
-                            color: const Color(0xFF474747),
-                          ),
-                        ),
-                        SizedBox(
-                          height: deviceSizeH * 0.045,
-                          width: deviceSizeW * 0.15,
-                          child: TextButton(
-                            onPressed: () {
-                              deleteDialog(context, fontSizeS, fontSizeM);
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFFF2F4F6),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(deviceSizeW * 0.03),
+                          SizedBox(
+                            height: deviceSizeH * 0.045,
+                            width: deviceSizeW * 0.15,
+                            child: TextButton(
+                              onPressed: () {
+                                deleteDialog(context, fontSizeS, fontSizeM);
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFFF2F4F6),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(deviceSizeW * 0.03),
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                "삭제",
+                                style: TextStyle(
+                                  fontSize: fontSizeS,
+                                  color: const Color(0xFFF57C75),
                                 ),
                               ),
                             ),
-                            child: Text(
-                              "삭제",
-                              style: TextStyle(
-                                fontSize: fontSizeS,
-                                color: const Color(0xFFF57C75),
-                              ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: deviceSizeH * 0.03,
+                    ),
+                    SizedBox(
+                      height: deviceSizeH * 0.06,
+                      width: deviceSizeW * 0.8,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "회원 탈퇴",
+                            style: TextStyle(
+                              fontSize: fontSizeM,
+                              color: const Color(0xFF474747),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: deviceSizeH * 0.03,
-                  ),
-                  SizedBox(
-                    height: deviceSizeH * 0.06,
-                    width: deviceSizeW * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "회원 탈퇴",
-                          style: TextStyle(
-                            fontSize: fontSizeM,
-                            color: const Color(0xFF474747),
-                          ),
-                        ),
-                        SizedBox(
-                          height: deviceSizeH * 0.045,
-                          width: deviceSizeW * 0.15,
-                          child: TextButton(
-                            onPressed: () {
-                              withdrawDialog(context, fontSizeS, fontSizeM);
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFFF2F4F6),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(deviceSizeW * 0.03),
+                          SizedBox(
+                            height: deviceSizeH * 0.045,
+                            width: deviceSizeW * 0.15,
+                            child: TextButton(
+                              onPressed: () {
+                                withdrawDialog(context, fontSizeS, fontSizeM);
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFFF2F4F6),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(deviceSizeW * 0.03),
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                "탈퇴",
+                                style: TextStyle(
+                                  fontSize: fontSizeS,
+                                  color: const Color(0xFFF57C75),
                                 ),
                               ),
                             ),
-                            child: Text(
-                              "탈퇴",
-                              style: TextStyle(
-                                fontSize: fontSizeS,
-                                color: const Color(0xFFF57C75),
-                              ),
-                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: deviceSizeH * 0.015,
-                  ),
-                ],
+                    SizedBox(
+                      height: deviceSizeH * 0.015,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

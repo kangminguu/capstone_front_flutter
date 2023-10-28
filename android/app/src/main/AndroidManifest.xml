@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.test_chart">
    <application
-        android:label="test_chart"
+        android:label="카투"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_cartto">
         <activity
             android:name=".MainActivity"
             android:exported="true"

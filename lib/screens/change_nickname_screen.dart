@@ -210,6 +210,7 @@ class _ChangeNicknameScreenState extends State<ChangeNicknameScreen> {
                                 onChanged: (value) {
                                   nickname = value;
                                 },
+                                keyboardType: TextInputType.multiline,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: const Color(0xFFF2F4F6),

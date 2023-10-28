@@ -49,8 +49,11 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     Future.delayed(Duration.zero, () async {
       dynamic userInfo = await storage.read(key: 'login');
+
       userInfo = jsonDecode(userInfo);
+
       Network network = Network();
+
       var result = await network.mainPage(userInfo['email']);
 
       money = result['totalprice'];
@@ -327,7 +330,7 @@ class _MainScreenState extends State<MainScreen> {
                                     width: 7,
                                   ),
                                   Text(
-                                    "8월 총 쇼핑 금액은",
+                                    "${DateTime.now().month}월 총 쇼핑 금액은",
                                     style: TextStyle(
                                       fontSize: fontSizeM,
                                       fontWeight: FontWeight.bold,
@@ -570,7 +573,7 @@ class _MainScreenState extends State<MainScreen> {
                                     width: 7,
                                   ),
                                   Text(
-                                    "8월 가장 많이 구매한 품목",
+                                    "${DateTime.now().month}월 가장 많이 구매한 품목",
                                     style: TextStyle(
                                       fontSize: fontSizeM,
                                       fontWeight: FontWeight.bold,

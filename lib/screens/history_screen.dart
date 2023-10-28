@@ -124,250 +124,269 @@ class _HistoryScreenState extends State<HistoryScreen> {
     // 상단 상태바 빼고 높이
     deviceSizeH = deviceSizeH - appBar.preferredSize.height;
 
-    return Scaffold(
-      appBar: appBar,
-      body: Container(
-        height: deviceSizeH,
-        width: deviceSizeW,
-        color: const Color(0xFFF2F4F6),
-        child: Column(
-          children: [
-            Container(
-              height: deviceSizeH * 0.03,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(deviceSizeW * 0.05),
+    Future<bool> onWillPop() async {
+      Navigator.pop(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HistoryScreen(),
+        ),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MainScreen(),
+        ),
+      );
+      return true;
+    }
+
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: Scaffold(
+        appBar: appBar,
+        body: Container(
+          height: deviceSizeH,
+          width: deviceSizeW,
+          color: const Color(0xFFF2F4F6),
+          child: Column(
+            children: [
+              Container(
+                height: deviceSizeH * 0.03,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(deviceSizeW * 0.05),
+                  ),
+                ),
+                height: deviceSizeH * 0.18,
+                width: deviceSizeW * 0.9,
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      height: deviceSizeH * 0.06 - 1,
+                      width: deviceSizeW * 0.8,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                "$_selectedYear년 $_selectedMonth월 $_selectedDay일",
+                                style: TextStyle(
+                                  fontSize: fontSizeML,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF474747),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Stack(
+                            children: [
+                              Positioned(
+                                right: 0,
+                                top: ((deviceSizeH * 0.06 - 1) / 2) -
+                                    ((deviceSizeH * 0.015) / 2),
+                                child: SvgPicture.asset(
+                                  'assets/images/svg/arrow_gray.svg',
+                                  height: deviceSizeH * 0.015,
+                                ),
+                              ),
+                              SizedBox(
+                                height: deviceSizeH * 0.06 - 1,
+                                width: deviceSizeW * 0.2,
+                                child: TextButton(
+                                  onPressed: () async {
+                                    selectDayDialog(
+                                        context, fontSizeS, fontSizeM);
+                                    date =
+                                        "$_selectedYear-$_selectedMonth-$_selectedDay";
+
+                                    setState(() {});
+                                  },
+                                  child: Text(
+                                    "날짜 선택",
+                                    style: TextStyle(
+                                      fontSize: fontSizeS,
+                                      color: const Color(0xFF999999),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 1,
+                      width: deviceSizeW * 0.8,
+                      child: Row(
+                        children: [
+                          for (var i = 0; i < 30; i++)
+                            Row(
+                              children: [
+                                Container(
+                                  color: const Color(0xFF999999),
+                                  width: (deviceSizeW * 0.8) / 90,
+                                ),
+                                Container(
+                                  color: Colors.white,
+                                  width: (deviceSizeW * 0.8) / 90,
+                                ),
+                                Container(
+                                  color: const Color(0xFF999999),
+                                  width: (deviceSizeW * 0.8) / 90,
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      // color: Colors.amber,
+                      height: deviceSizeH * 0.02,
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      height: deviceSizeH * 0.04,
+                      width: deviceSizeW * 0.8,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "총 상품 수량",
+                            style: TextStyle(
+                              fontSize: fontSizeM,
+                              color: const Color(0xFF474747),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                totalCount.toString(),
+                                style: TextStyle(
+                                  fontSize: fontSizeM,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF474747),
+                                ),
+                              ),
+                              Text(
+                                "개",
+                                style: TextStyle(
+                                  fontSize: fontSizeM,
+                                  color: const Color(0xFF474747),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      height: deviceSizeH * 0.04,
+                      width: deviceSizeW * 0.8,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "총 상품 금액",
+                            style: TextStyle(
+                              fontSize: fontSizeM,
+                              color: const Color(0xFF474747),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                NumberFormat(
+                                        '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                    .format(totalPrice),
+                                style: TextStyle(
+                                    fontSize: fontSizeM,
+                                    fontWeight: FontWeight.bold,
+                                    // color: const Color(0xFF474747),
+                                    color: Colors.black),
+                              ),
+                              Text(
+                                "원",
+                                style: TextStyle(
+                                  fontSize: fontSizeM,
+                                  color: const Color(0xFF474747),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      // color: Colors.amber,
+                      height: deviceSizeH * 0.02,
+                    ),
+                  ],
                 ),
               ),
-              height: deviceSizeH * 0.18,
-              width: deviceSizeW * 0.9,
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    height: deviceSizeH * 0.06 - 1,
-                    width: deviceSizeW * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+              Container(
+                height: deviceSizeH * 0.03,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                height: deviceSizeH * 0.05,
+                width: deviceSizeW * 0.8,
+                child: Text(
+                  "쇼핑 상품 상세 내역",
+                  style: TextStyle(
+                    fontSize: fontSizeML,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF474747),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: deviceSizeH * 0.71,
+                child: shoppings.isEmpty
+                    ? Opacity(
+                        opacity: 0.5,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            SvgPicture.asset(
+                              'assets/images/svg/face_worry.svg',
+                              height: deviceSizeH * 0.1,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
                             Text(
-                              "$_selectedYear년 $_selectedMonth월 $_selectedDay일",
+                              "아무 기록이 없어요",
                               style: TextStyle(
                                 fontSize: fontSizeML,
                                 fontWeight: FontWeight.bold,
                                 color: const Color(0xFF474747),
                               ),
                             ),
+                            const SizedBox(
+                              height: 20,
+                            ),
                           ],
                         ),
-                        Stack(
+                      )
+                    : SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
                           children: [
-                            Positioned(
-                              right: 0,
-                              top: ((deviceSizeH * 0.06 - 1) / 2) -
-                                  ((deviceSizeH * 0.015) / 2),
-                              child: SvgPicture.asset(
-                                'assets/images/svg/arrow_gray.svg',
-                                height: deviceSizeH * 0.015,
-                              ),
-                            ),
-                            SizedBox(
-                              height: deviceSizeH * 0.06 - 1,
-                              width: deviceSizeW * 0.2,
-                              child: TextButton(
-                                onPressed: () async {
-                                  selectDayDialog(
-                                      context, fontSizeS, fontSizeM);
-                                  date =
-                                      "$_selectedYear-$_selectedMonth-$_selectedDay";
-
-                                  setState(() {});
-                                },
-                                child: Text(
-                                  "날짜 선택",
-                                  style: TextStyle(
-                                    fontSize: fontSizeS,
-                                    color: const Color(0xFF999999),
-                                  ),
-                                ),
-                              ),
-                            ),
+                            for (int i = 0; i < shoppings.length; i++)
+                              singleProductDetail(fontSizeM, i),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 1,
-                    width: deviceSizeW * 0.8,
-                    child: Row(
-                      children: [
-                        for (var i = 0; i < 30; i++)
-                          Row(
-                            children: [
-                              Container(
-                                color: const Color(0xFF999999),
-                                width: (deviceSizeW * 0.8) / 90,
-                              ),
-                              Container(
-                                color: Colors.white,
-                                width: (deviceSizeW * 0.8) / 90,
-                              ),
-                              Container(
-                                color: const Color(0xFF999999),
-                                width: (deviceSizeW * 0.8) / 90,
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    // color: Colors.amber,
-                    height: deviceSizeH * 0.02,
-                  ),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    height: deviceSizeH * 0.04,
-                    width: deviceSizeW * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "총 상품 수량",
-                          style: TextStyle(
-                            fontSize: fontSizeM,
-                            color: const Color(0xFF474747),
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              totalCount.toString(),
-                              style: TextStyle(
-                                fontSize: fontSizeM,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF474747),
-                              ),
-                            ),
-                            Text(
-                              "개",
-                              style: TextStyle(
-                                fontSize: fontSizeM,
-                                color: const Color(0xFF474747),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    height: deviceSizeH * 0.04,
-                    width: deviceSizeW * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "총 상품 금액",
-                          style: TextStyle(
-                            fontSize: fontSizeM,
-                            color: const Color(0xFF474747),
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              NumberFormat(
-                                      '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
-                                  .format(totalPrice),
-                              style: TextStyle(
-                                  fontSize: fontSizeM,
-                                  fontWeight: FontWeight.bold,
-                                  // color: const Color(0xFF474747),
-                                  color: Colors.black),
-                            ),
-                            Text(
-                              "원",
-                              style: TextStyle(
-                                fontSize: fontSizeM,
-                                color: const Color(0xFF474747),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    // color: Colors.amber,
-                    height: deviceSizeH * 0.02,
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              height: deviceSizeH * 0.03,
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              height: deviceSizeH * 0.05,
-              width: deviceSizeW * 0.8,
-              child: Text(
-                "쇼핑 상품 상세 내역",
-                style: TextStyle(
-                  fontSize: fontSizeML,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF474747),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: deviceSizeH * 0.71,
-              child: shoppings.isEmpty
-                  ? Opacity(
-                      opacity: 0.5,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            'assets/images/svg/face_worry.svg',
-                            height: deviceSizeH * 0.1,
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "아무 기록이 없어요",
-                            style: TextStyle(
-                              fontSize: fontSizeML,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF474747),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                        ],
                       ),
-                    )
-                  : SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        children: [
-                          for (int i = 0; i < shoppings.length; i++)
-                            singleProductDetail(fontSizeM, i),
-                        ],
-                      ),
-                    ),
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );
