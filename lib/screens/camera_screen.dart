@@ -82,7 +82,6 @@ class _CameraScreenState extends State<CameraScreen> {
         if (!mounted) {
           return;
         }
-
         setState(() {});
         imageStreamStart();
       }).catchError((Object e) {
@@ -174,6 +173,7 @@ class _CameraScreenState extends State<CameraScreen> {
     double fontSizeM = deviceSizeH * 0.017;
     double fontSizeML = deviceSizeH * 0.02;
     double fontSizeL = deviceSizeH * 0.03;
+    double modalHeight = deviceSizeH - 56;
 
     Future<bool> onWillPop() async {
       Navigator.pop(
@@ -202,347 +202,655 @@ class _CameraScreenState extends State<CameraScreen> {
             ),
             Stack(
               children: [
-                GestureDetector(
-                  onDoubleTap: () {
-                    setState(() {
-                      showRecoPage = true;
-                    });
-                  },
-                  child: Container(
-                    alignment: Alignment.bottomCenter,
-                    color: Colors.black,
-                    height: deviceSizeH,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          top: 0,
-                          child: SizedBox(
-                            height: deviceSizeH * 0.79,
-                            width: deviceSizeW,
-                            child: CameraPreview(controller),
-                          ),
+                Container(
+                  alignment: Alignment.bottomCenter,
+                  color: Colors.black,
+                  height: deviceSizeH,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: 0,
+                        child: SizedBox(
+                          height: deviceSizeH * 0.79,
+                          width: deviceSizeW,
+                          child: CameraPreview(controller),
                         ),
-                        Positioned(
-                          bottom: 0,
-                          child: Container(
-                            height: deviceSizeH * 0.25,
-                            width: deviceSizeW,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(deviceSizeW * 0.05),
-                                topRight: Radius.circular(deviceSizeW * 0.05),
-                              ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        child: Container(
+                          height: deviceSizeH * 0.25,
+                          width: deviceSizeW,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(deviceSizeW * 0.05),
+                              topRight: Radius.circular(deviceSizeW * 0.05),
                             ),
-                            child: Column(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    showShoppingList(context);
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    color: const Color(0xFFFFFFFF),
-                                    height: deviceSizeH * 0.04,
-                                    width: deviceSizeW * 0.2,
-                                    child: Transform.rotate(
-                                      angle: -math.pi / 2,
-                                      child: SvgPicture.asset(
-                                        'assets/images/svg/arrow.svg',
-                                        height: deviceSizeH * 0.025,
-                                        width: deviceSizeH * 0.025,
+                          ),
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet<void>(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft:
+                                            Radius.circular(deviceSizeW * 0.05),
+                                        topRight:
+                                            Radius.circular(deviceSizeW * 0.05),
                                       ),
+                                    ),
+                                    builder: (BuildContext context) {
+                                      return StatefulBuilder(
+                                        builder: (BuildContext context,
+                                            StateSetter bottomState) {
+                                          return Container(
+                                            height: modalHeight,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(
+                                                    deviceSizeW * 0.05),
+                                                topRight: Radius.circular(
+                                                    deviceSizeW * 0.05),
+                                              ),
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    color:
+                                                        const Color(0xFFFFFFFF),
+                                                    height: deviceSizeH * 0.04,
+                                                    width: deviceSizeW * 0.2,
+                                                    child: Transform.rotate(
+                                                      angle: math.pi / 2,
+                                                      child: SvgPicture.asset(
+                                                        'assets/images/svg/arrow.svg',
+                                                        height:
+                                                            deviceSizeH * 0.025,
+                                                        width:
+                                                            deviceSizeH * 0.025,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height:
+                                                      deviceSizeH * 0.05 - 1,
+                                                  width: deviceSizeW * 0.9,
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width:
+                                                            deviceSizeW * 0.4,
+                                                        child: Text(
+                                                          "상품명",
+                                                          style: TextStyle(
+                                                            fontSize: fontSizeS,
+                                                            color: const Color(
+                                                                0xFF474747),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width:
+                                                            deviceSizeW * 0.25,
+                                                        child: Text(
+                                                          "가격",
+                                                          style: TextStyle(
+                                                            fontSize: fontSizeS,
+                                                            color: const Color(
+                                                                0xFF474747),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width:
+                                                            deviceSizeW * 0.25,
+                                                        child: Text(
+                                                          "수량",
+                                                          style: TextStyle(
+                                                            fontSize: fontSizeS,
+                                                            color: const Color(
+                                                                0xFF474747),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 1,
+                                                  width: deviceSizeW * 0.9,
+                                                  child: Row(
+                                                    children: [
+                                                      for (var i = 0;
+                                                          i < 30;
+                                                          i++)
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              color: const Color(
+                                                                  0xFF999999),
+                                                              width:
+                                                                  (deviceSizeW *
+                                                                          0.9) /
+                                                                      90,
+                                                            ),
+                                                            Container(
+                                                              color:
+                                                                  Colors.white,
+                                                              width:
+                                                                  (deviceSizeW *
+                                                                          0.9) /
+                                                                      90,
+                                                            ),
+                                                            Container(
+                                                              color: const Color(
+                                                                  0xFF999999),
+                                                              width:
+                                                                  (deviceSizeW *
+                                                                          0.9) /
+                                                                      90,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: modalHeight -
+                                                      (deviceSizeH * 0.27),
+                                                  width: deviceSizeW * 0.9,
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    child: Column(
+                                                      children: [
+                                                        for (int i = 0;
+                                                            i <
+                                                                product_name
+                                                                    .length;
+                                                            i++)
+                                                          singleProduct(
+                                                            fontSizeM,
+                                                            fontSizeS,
+                                                            i,
+                                                            bottomState,
+                                                          )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 1,
+                                                  width: deviceSizeW * 0.9,
+                                                  child: Row(
+                                                    children: [
+                                                      for (var i = 0;
+                                                          i < 30;
+                                                          i++)
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              color: const Color(
+                                                                  0xFF999999),
+                                                              width:
+                                                                  (deviceSizeW *
+                                                                          0.9) /
+                                                                      90,
+                                                            ),
+                                                            Container(
+                                                              color:
+                                                                  Colors.white,
+                                                              width:
+                                                                  (deviceSizeW *
+                                                                          0.9) /
+                                                                      90,
+                                                            ),
+                                                            Container(
+                                                              color: const Color(
+                                                                  0xFF999999),
+                                                              width:
+                                                                  (deviceSizeW *
+                                                                          0.9) /
+                                                                      90,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Container(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  height:
+                                                      deviceSizeH * 0.04 - 1,
+                                                  width: deviceSizeW * 0.8,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "총 수량",
+                                                        style: TextStyle(
+                                                          fontSize: fontSizeM,
+                                                          color: const Color(
+                                                              0xFF474747),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        "총 금액",
+                                                        style: TextStyle(
+                                                          fontSize: fontSizeM,
+                                                          color: const Color(
+                                                              0xFF474747),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Container(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  height: deviceSizeH * 0.04,
+                                                  width: deviceSizeW * 0.8,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "$totalCount개",
+                                                        style: TextStyle(
+                                                          fontSize: fontSizeML,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: const Color(
+                                                              0xFF474747),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        totalPriceStr,
+                                                        style: TextStyle(
+                                                          fontSize: fontSizeML,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: const Color(
+                                                              0xFF474747),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Container(
+                                                  height: deviceSizeH * 0.02,
+                                                ),
+                                                SizedBox(
+                                                  height: deviceSizeH * 0.06,
+                                                  width: deviceSizeW * 0.9,
+                                                  child: TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      Navigator.pop(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                CameraScreen(
+                                                                    const [],
+                                                                    const [],
+                                                                    const [],
+                                                                    const [],
+                                                                    0,
+                                                                    0,
+                                                                    const [])),
+                                                      );
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              DetailCartScreen(
+                                                                  product_name,
+                                                                  product_price,
+                                                                  product_count,
+                                                                  product_total,
+                                                                  totalPrice
+                                                                      .toInt(),
+                                                                  totalCount,
+                                                                  imageAddress),
+                                                        ),
+                                                      );
+                                                    },
+                                                    style: TextButton.styleFrom(
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xFFFF833D),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                          Radius.circular(
+                                                              deviceSizeW *
+                                                                  0.03),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      "쇼핑 정보 기록하기",
+                                                      style: TextStyle(
+                                                        fontSize: fontSizeM,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  height: deviceSizeH * 0.02,
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  color: const Color(0xFFFFFFFF),
+                                  height: deviceSizeH * 0.04,
+                                  width: deviceSizeW * 0.2,
+                                  child: Transform.rotate(
+                                    angle: -math.pi / 2,
+                                    child: SvgPicture.asset(
+                                      'assets/images/svg/arrow.svg',
+                                      height: deviceSizeH * 0.025,
+                                      width: deviceSizeH * 0.025,
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: deviceSizeH * 0.05 - 1,
-                                  width: deviceSizeW * 0.9,
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        alignment: Alignment.center,
-                                        width: deviceSizeW * 0.4,
-                                        child: Text(
-                                          "상품명",
-                                          style: TextStyle(
-                                            fontSize: fontSizeS,
-                                            color: const Color(0xFF474747),
-                                          ),
+                              ),
+                              SizedBox(
+                                height: deviceSizeH * 0.05 - 1,
+                                width: deviceSizeW * 0.9,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.center,
+                                      width: deviceSizeW * 0.4,
+                                      child: Text(
+                                        "상품명",
+                                        style: TextStyle(
+                                          fontSize: fontSizeS,
+                                          color: const Color(0xFF474747),
                                         ),
                                       ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        width: deviceSizeW * 0.25,
-                                        child: Text(
-                                          "가격",
-                                          style: TextStyle(
-                                            fontSize: fontSizeS,
-                                            color: const Color(0xFF474747),
-                                          ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      width: deviceSizeW * 0.25,
+                                      child: Text(
+                                        "가격",
+                                        style: TextStyle(
+                                          fontSize: fontSizeS,
+                                          color: const Color(0xFF474747),
                                         ),
                                       ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        width: deviceSizeW * 0.25,
-                                        child: Text(
-                                          "수량",
-                                          style: TextStyle(
-                                            fontSize: fontSizeS,
-                                            color: const Color(0xFF474747),
-                                          ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      width: deviceSizeW * 0.25,
+                                      child: Text(
+                                        "수량",
+                                        style: TextStyle(
+                                          fontSize: fontSizeS,
+                                          color: const Color(0xFF474747),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(
-                                  height: 1,
-                                  width: deviceSizeW * 0.9,
-                                  child: Row(
-                                    children: [
-                                      for (var i = 0; i < 30; i++)
-                                        Row(
-                                          children: [
-                                            Container(
-                                              color: const Color(0xFF999999),
-                                              width: (deviceSizeW * 0.9) / 90,
-                                            ),
-                                            Container(
-                                              color: Colors.white,
-                                              width: (deviceSizeW * 0.9) / 90,
-                                            ),
-                                            Container(
-                                              color: const Color(0xFF999999),
-                                              width: (deviceSizeW * 0.9) / 90,
-                                            ),
-                                          ],
-                                        ),
-                                    ],
-                                  ),
+                              ),
+                              SizedBox(
+                                height: 1,
+                                width: deviceSizeW * 0.9,
+                                child: Row(
+                                  children: [
+                                    for (var i = 0; i < 30; i++)
+                                      Row(
+                                        children: [
+                                          Container(
+                                            color: const Color(0xFF999999),
+                                            width: (deviceSizeW * 0.9) / 90,
+                                          ),
+                                          Container(
+                                            color: Colors.white,
+                                            width: (deviceSizeW * 0.9) / 90,
+                                          ),
+                                          Container(
+                                            color: const Color(0xFF999999),
+                                            width: (deviceSizeW * 0.9) / 90,
+                                          ),
+                                        ],
+                                      ),
+                                  ],
                                 ),
-                                SizedBox(
-                                  // color: Colors.green,
-                                  height: deviceSizeH * 0.08,
-                                  width: deviceSizeW * 0.9,
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        alignment: Alignment.center,
-                                        width: deviceSizeW * 0.4,
-                                        child: Text(
-                                          (product_name.isEmpty)
-                                              ? "-"
-                                              : product_name[
-                                                  product_count.length - 1],
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: fontSizeM,
-                                            fontWeight: FontWeight.bold,
-                                            color: const Color(0xFF474747),
-                                          ),
+                              ),
+                              SizedBox(
+                                // color: Colors.green,
+                                height: deviceSizeH * 0.08,
+                                width: deviceSizeW * 0.9,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.center,
+                                      width: deviceSizeW * 0.4,
+                                      child: Text(
+                                        (product_name.isEmpty)
+                                            ? "-"
+                                            : product_name[0],
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: fontSizeM,
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF474747),
                                         ),
                                       ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        width: deviceSizeW * 0.25,
-                                        child: Text(
-                                          (product_price.isEmpty)
-                                              ? ""
-                                              : NumberFormat(
-                                                      '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
-                                                  .format(product_total[
-                                                      product_count.length -
-                                                          1]),
-                                          style: TextStyle(
-                                            fontSize: fontSizeM,
-                                            fontWeight: FontWeight.bold,
-                                            color: const Color(0xFF474747),
-                                          ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      width: deviceSizeW * 0.25,
+                                      child: Text(
+                                        (product_price.isEmpty)
+                                            ? ""
+                                            : NumberFormat(
+                                                    '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                                .format(product_total[0]),
+                                        style: TextStyle(
+                                          fontSize: fontSizeM,
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF474747),
                                         ),
                                       ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        width: deviceSizeW * 0.25,
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              alignment: Alignment.center,
-                                              height: deviceSizeW * 0.1,
-                                              width: deviceSizeW * 0.1,
-                                              child: IconButton(
-                                                onPressed: () {
-                                                  print("minus");
-                                                  if (product_count[
-                                                          product_count.length -
-                                                              1] >
-                                                      1) {
-                                                    product_count[
-                                                        product_count.length -
-                                                            1] -= 1;
-                                                    totalCount -= 1;
-                                                    product_total[
-                                                        product_count.length -
-                                                            1] -= product_price[
-                                                        product_count.length -
-                                                            1];
-                                                    totalPrice -= product_price[
-                                                        product_count.length -
-                                                            1];
-                                                    totalPriceStr = NumberFormat(
-                                                            '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
-                                                        .format(totalPrice);
-                                                    setState(() {});
-                                                  }
-                                                },
-                                                icon: SvgPicture.asset(
-                                                  'assets/images/svg/btn_minus.svg',
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              alignment: Alignment.center,
-                                              width: deviceSizeW * 0.05,
-                                              child: Text(
-                                                (product_count.isEmpty)
-                                                    ? ""
-                                                    : product_count[0]
-                                                        .toString(),
-                                                style: TextStyle(
-                                                  fontSize: fontSizeM,
-                                                  fontWeight: FontWeight.bold,
-                                                  color:
-                                                      const Color(0xFF474747),
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              alignment: Alignment.center,
-                                              height: deviceSizeW * 0.1,
-                                              width: deviceSizeW * 0.1,
-                                              child: IconButton(
-                                                onPressed: () {
-                                                  print("plus");
-                                                  product_count[
-                                                      product_count.length -
-                                                          1] += 1;
-                                                  totalCount += 1;
-                                                  product_total[
-                                                      product_count.length -
-                                                          1] += product_price[
-                                                      product_count.length - 1];
-                                                  totalPrice += product_price[
-                                                      product_count.length - 1];
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      width: deviceSizeW * 0.25,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.center,
+                                            height: deviceSizeW * 0.1,
+                                            width: deviceSizeW * 0.1,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                print("minus");
+                                                if (product_count[0] > 1) {
+                                                  product_count[0] -= 1;
+                                                  totalCount -= 1;
+                                                  product_total[0] -=
+                                                      product_price[0];
+                                                  totalPrice -=
+                                                      product_price[0];
                                                   totalPriceStr = NumberFormat(
                                                           '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
                                                       .format(totalPrice);
                                                   setState(() {});
-                                                },
-                                                icon: SvgPicture.asset(
-                                                  'assets/images/svg/btn_plus.svg',
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: deviceSizeH * 0.06,
-                                  width: deviceSizeW * 0.9,
-                                  child: TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => CameraScreen(
-                                              const [],
-                                              const [],
-                                              const [],
-                                              const [],
-                                              0,
-                                              0,
-                                              const []),
-                                        ),
-                                      );
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              DetailCartScreen(
-                                                  product_name,
-                                                  product_price,
-                                                  product_count,
-                                                  product_total,
-                                                  totalPrice.toInt(),
-                                                  totalCount,
-                                                  imageAddress),
-                                        ),
-                                      );
-                                    },
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: const Color(0xFFFF833D),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(deviceSizeW * 0.03),
-                                        ),
-                                      ),
-                                    ),
-                                    child: SizedBox(
-                                      height: deviceSizeH * 0.03,
-                                      width: deviceSizeW * 0.9,
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            alignment: Alignment.center,
-                                            height: deviceSizeH * 0.03,
-                                            child: Text(
-                                              "쇼핑 정보 기록하기",
-                                              style: TextStyle(
-                                                fontSize: fontSizeM,
-                                                color: Colors.white,
+                                                }
+                                              },
+                                              icon: SvgPicture.asset(
+                                                'assets/images/svg/btn_minus.svg',
                                               ),
                                             ),
                                           ),
-                                          Positioned(
-                                            left: (deviceSizeH * 0.02) / 2,
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              height: deviceSizeH * 0.03,
-                                              width: deviceSizeH * 0.03,
-                                              decoration: const BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(100),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                totalCount.toString(),
-                                                style: TextStyle(
-                                                  fontSize: fontSizeM,
-                                                  fontWeight: FontWeight.bold,
-                                                  color:
-                                                      const Color(0xFFFF833D),
-                                                ),
+                                          Container(
+                                            alignment: Alignment.center,
+                                            width: deviceSizeW * 0.05,
+                                            child: Text(
+                                              (product_count.isEmpty)
+                                                  ? ""
+                                                  : product_count[0].toString(),
+                                              style: TextStyle(
+                                                fontSize: fontSizeM,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFF474747),
                                               ),
                                             ),
-                                          )
+                                          ),
+                                          Container(
+                                            alignment: Alignment.center,
+                                            height: deviceSizeW * 0.1,
+                                            width: deviceSizeW * 0.1,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                print("plus");
+                                                product_count[0] += 1;
+                                                totalCount += 1;
+                                                product_total[0] +=
+                                                    product_price[0];
+                                                totalPrice += product_price[0];
+                                                totalPriceStr = NumberFormat(
+                                                        '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
+                                                    .format(totalPrice);
+                                                setState(() {});
+                                              },
+                                              icon: SvgPicture.asset(
+                                                'assets/images/svg/btn_plus.svg',
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: deviceSizeH * 0.06,
+                                width: deviceSizeW * 0.9,
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CameraScreen(
+                                            const [],
+                                            const [],
+                                            const [],
+                                            const [],
+                                            0,
+                                            0,
+                                            const []),
+                                      ),
+                                    );
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailCartScreen(
+                                            product_name,
+                                            product_price,
+                                            product_count,
+                                            product_total,
+                                            totalPrice.toInt(),
+                                            totalCount,
+                                            imageAddress),
+                                      ),
+                                    );
+                                  },
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: const Color(0xFFFF833D),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(deviceSizeW * 0.03),
+                                      ),
+                                    ),
+                                  ),
+                                  child: SizedBox(
+                                    height: deviceSizeH * 0.03,
+                                    width: deviceSizeW * 0.9,
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          alignment: Alignment.center,
+                                          height: deviceSizeH * 0.03,
+                                          child: Text(
+                                            "쇼핑 정보 기록하기",
+                                            style: TextStyle(
+                                              fontSize: fontSizeM,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          left: (deviceSizeH * 0.02) / 2,
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            height: deviceSizeH * 0.03,
+                                            width: deviceSizeH * 0.03,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(100),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              totalCount.toString(),
+                                              style: TextStyle(
+                                                fontSize: fontSizeM,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFFFF833D),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                Container(
-                                  height: deviceSizeH * 0.02,
-                                ),
-                              ],
-                            ),
+                              ),
+                              Container(
+                                height: deviceSizeH * 0.02,
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 Container(
@@ -789,278 +1097,278 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Future<dynamic> showShoppingList(BuildContext context) {
-    double fontSizeS = deviceSizeH * 0.015;
-    double fontSizeM = deviceSizeH * 0.017;
-    double fontSizeML = deviceSizeH * 0.02;
-    double fontSizeL = deviceSizeH * 0.03;
+  // Future<dynamic> showShoppingList(BuildContext context) {
+  //   double fontSizeS = deviceSizeH * 0.015;
+  //   double fontSizeM = deviceSizeH * 0.017;
+  //   double fontSizeML = deviceSizeH * 0.02;
+  //   double fontSizeL = deviceSizeH * 0.03;
 
-    double modalHeight = deviceSizeH - 56;
+  //   double modalHeight = deviceSizeH - 56;
 
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(deviceSizeW * 0.05),
-          topRight: Radius.circular(deviceSizeW * 0.05),
-        ),
-      ),
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter bottomState) {
-            return Container(
-              height: modalHeight,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(deviceSizeW * 0.05),
-                  topRight: Radius.circular(deviceSizeW * 0.05),
-                ),
-              ),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      color: const Color(0xFFFFFFFF),
-                      height: deviceSizeH * 0.04,
-                      width: deviceSizeW * 0.2,
-                      child: Transform.rotate(
-                        angle: math.pi / 2,
-                        child: SvgPicture.asset(
-                          'assets/images/svg/arrow.svg',
-                          height: deviceSizeH * 0.025,
-                          width: deviceSizeH * 0.025,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: deviceSizeH * 0.05 - 1,
-                    width: deviceSizeW * 0.9,
-                    child: Row(
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          width: deviceSizeW * 0.4,
-                          child: Text(
-                            "상품명",
-                            style: TextStyle(
-                              fontSize: fontSizeS,
-                              color: const Color(0xFF474747),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: deviceSizeW * 0.25,
-                          child: Text(
-                            "가격",
-                            style: TextStyle(
-                              fontSize: fontSizeS,
-                              color: const Color(0xFF474747),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: deviceSizeW * 0.25,
-                          child: Text(
-                            "수량",
-                            style: TextStyle(
-                              fontSize: fontSizeS,
-                              color: const Color(0xFF474747),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 1,
-                    width: deviceSizeW * 0.9,
-                    child: Row(
-                      children: [
-                        for (var i = 0; i < 30; i++)
-                          Row(
-                            children: [
-                              Container(
-                                color: const Color(0xFF999999),
-                                width: (deviceSizeW * 0.9) / 90,
-                              ),
-                              Container(
-                                color: Colors.white,
-                                width: (deviceSizeW * 0.9) / 90,
-                              ),
-                              Container(
-                                color: const Color(0xFF999999),
-                                width: (deviceSizeW * 0.9) / 90,
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: modalHeight - (deviceSizeH * 0.27),
-                    width: deviceSizeW * 0.9,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        children: [
-                          for (int i = product_count.length - 1; i > -1; i--)
-                            singleProduct(
-                              fontSizeM,
-                              fontSizeS,
-                              i,
-                              bottomState,
-                            )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 1,
-                    width: deviceSizeW * 0.9,
-                    child: Row(
-                      children: [
-                        for (var i = 0; i < 30; i++)
-                          Row(
-                            children: [
-                              Container(
-                                color: const Color(0xFF999999),
-                                width: (deviceSizeW * 0.9) / 90,
-                              ),
-                              Container(
-                                color: Colors.white,
-                                width: (deviceSizeW * 0.9) / 90,
-                              ),
-                              Container(
-                                color: const Color(0xFF999999),
-                                width: (deviceSizeW * 0.9) / 90,
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.bottomCenter,
-                    height: deviceSizeH * 0.04 - 1,
-                    width: deviceSizeW * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "총 수량",
-                          style: TextStyle(
-                            fontSize: fontSizeM,
-                            color: const Color(0xFF474747),
-                          ),
-                        ),
-                        Text(
-                          "총 금액",
-                          style: TextStyle(
-                            fontSize: fontSizeM,
-                            color: const Color(0xFF474747),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.bottomCenter,
-                    height: deviceSizeH * 0.04,
-                    width: deviceSizeW * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "$totalCount개",
-                          style: TextStyle(
-                            fontSize: fontSizeML,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF474747),
-                          ),
-                        ),
-                        Text(
-                          totalPriceStr,
-                          style: TextStyle(
-                            fontSize: fontSizeML,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF474747),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: deviceSizeH * 0.02,
-                  ),
-                  SizedBox(
-                    height: deviceSizeH * 0.06,
-                    width: deviceSizeW * 0.9,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CameraScreen(
-                                  const [],
-                                  const [],
-                                  const [],
-                                  const [],
-                                  0,
-                                  0,
-                                  const [])),
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailCartScreen(
-                                product_name,
-                                product_price,
-                                product_count,
-                                product_total,
-                                totalPrice.toInt(),
-                                totalCount,
-                                imageAddress),
-                          ),
-                        );
-                      },
-                      style: TextButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF833D),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(deviceSizeW * 0.03),
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        "쇼핑 정보 기록하기",
-                        style: TextStyle(
-                          fontSize: fontSizeM,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: deviceSizeH * 0.02,
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
+  //   return showModalBottomSheet<void>(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.only(
+  //         topLeft: Radius.circular(deviceSizeW * 0.05),
+  //         topRight: Radius.circular(deviceSizeW * 0.05),
+  //       ),
+  //     ),
+  //     builder: (BuildContext context) {
+  //       return StatefulBuilder(
+  //         builder: (BuildContext context, StateSetter bottomState) {
+  //           return Container(
+  //             height: modalHeight,
+  //             decoration: BoxDecoration(
+  //               color: Colors.white,
+  //               borderRadius: BorderRadius.only(
+  //                 topLeft: Radius.circular(deviceSizeW * 0.05),
+  //                 topRight: Radius.circular(deviceSizeW * 0.05),
+  //               ),
+  //             ),
+  //             child: Column(
+  //               children: [
+  //                 GestureDetector(
+  //                   onTap: () {
+  //                     Navigator.pop(context);
+  //                   },
+  //                   child: Container(
+  //                     alignment: Alignment.center,
+  //                     color: const Color(0xFFFFFFFF),
+  //                     height: deviceSizeH * 0.04,
+  //                     width: deviceSizeW * 0.2,
+  //                     child: Transform.rotate(
+  //                       angle: math.pi / 2,
+  //                       child: SvgPicture.asset(
+  //                         'assets/images/svg/arrow.svg',
+  //                         height: deviceSizeH * 0.025,
+  //                         width: deviceSizeH * 0.025,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 SizedBox(
+  //                   height: deviceSizeH * 0.05 - 1,
+  //                   width: deviceSizeW * 0.9,
+  //                   child: Row(
+  //                     children: [
+  //                       Container(
+  //                         alignment: Alignment.center,
+  //                         width: deviceSizeW * 0.4,
+  //                         child: Text(
+  //                           "상품명",
+  //                           style: TextStyle(
+  //                             fontSize: fontSizeS,
+  //                             color: const Color(0xFF474747),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       Container(
+  //                         alignment: Alignment.center,
+  //                         width: deviceSizeW * 0.25,
+  //                         child: Text(
+  //                           "가격",
+  //                           style: TextStyle(
+  //                             fontSize: fontSizeS,
+  //                             color: const Color(0xFF474747),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       Container(
+  //                         alignment: Alignment.center,
+  //                         width: deviceSizeW * 0.25,
+  //                         child: Text(
+  //                           "수량",
+  //                           style: TextStyle(
+  //                             fontSize: fontSizeS,
+  //                             color: const Color(0xFF474747),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 SizedBox(
+  //                   height: 1,
+  //                   width: deviceSizeW * 0.9,
+  //                   child: Row(
+  //                     children: [
+  //                       for (var i = 0; i < 30; i++)
+  //                         Row(
+  //                           children: [
+  //                             Container(
+  //                               color: const Color(0xFF999999),
+  //                               width: (deviceSizeW * 0.9) / 90,
+  //                             ),
+  //                             Container(
+  //                               color: Colors.white,
+  //                               width: (deviceSizeW * 0.9) / 90,
+  //                             ),
+  //                             Container(
+  //                               color: const Color(0xFF999999),
+  //                               width: (deviceSizeW * 0.9) / 90,
+  //                             ),
+  //                           ],
+  //                         ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 SizedBox(
+  //                   height: modalHeight - (deviceSizeH * 0.27),
+  //                   width: deviceSizeW * 0.9,
+  //                   child: SingleChildScrollView(
+  //                     scrollDirection: Axis.vertical,
+  //                     child: Column(
+  //                       children: [
+  //                         for (int i = 0; i < product_name.length; i++)
+  //                           singleProduct(
+  //                             fontSizeM,
+  //                             fontSizeS,
+  //                             i,
+  //                             bottomState,
+  //                           )
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 SizedBox(
+  //                   height: 1,
+  //                   width: deviceSizeW * 0.9,
+  //                   child: Row(
+  //                     children: [
+  //                       for (var i = 0; i < 30; i++)
+  //                         Row(
+  //                           children: [
+  //                             Container(
+  //                               color: const Color(0xFF999999),
+  //                               width: (deviceSizeW * 0.9) / 90,
+  //                             ),
+  //                             Container(
+  //                               color: Colors.white,
+  //                               width: (deviceSizeW * 0.9) / 90,
+  //                             ),
+  //                             Container(
+  //                               color: const Color(0xFF999999),
+  //                               width: (deviceSizeW * 0.9) / 90,
+  //                             ),
+  //                           ],
+  //                         ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Container(
+  //                   alignment: Alignment.bottomCenter,
+  //                   height: deviceSizeH * 0.04 - 1,
+  //                   width: deviceSizeW * 0.8,
+  //                   child: Row(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       Text(
+  //                         "총 수량",
+  //                         style: TextStyle(
+  //                           fontSize: fontSizeM,
+  //                           color: const Color(0xFF474747),
+  //                         ),
+  //                       ),
+  //                       Text(
+  //                         "총 금액",
+  //                         style: TextStyle(
+  //                           fontSize: fontSizeM,
+  //                           color: const Color(0xFF474747),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Container(
+  //                   alignment: Alignment.bottomCenter,
+  //                   height: deviceSizeH * 0.04,
+  //                   width: deviceSizeW * 0.8,
+  //                   child: Row(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       Text(
+  //                         "$totalCount개",
+  //                         style: TextStyle(
+  //                           fontSize: fontSizeML,
+  //                           fontWeight: FontWeight.bold,
+  //                           color: const Color(0xFF474747),
+  //                         ),
+  //                       ),
+  //                       Text(
+  //                         totalPriceStr,
+  //                         style: TextStyle(
+  //                           fontSize: fontSizeML,
+  //                           fontWeight: FontWeight.bold,
+  //                           color: const Color(0xFF474747),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Container(
+  //                   height: deviceSizeH * 0.02,
+  //                 ),
+  //                 SizedBox(
+  //                   height: deviceSizeH * 0.06,
+  //                   width: deviceSizeW * 0.9,
+  //                   child: TextButton(
+  //                     onPressed: () {
+  //                       Navigator.pop(context);
+  //                       Navigator.pop(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                             builder: (context) => CameraScreen(
+  //                                 const [],
+  //                                 const [],
+  //                                 const [],
+  //                                 const [],
+  //                                 0,
+  //                                 0,
+  //                                 const [])),
+  //                       );
+  //                       Navigator.push(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                           builder: (context) => DetailCartScreen(
+  //                               product_name,
+  //                               product_price,
+  //                               product_count,
+  //                               product_total,
+  //                               totalPrice.toInt(),
+  //                               totalCount,
+  //                               imageAddress),
+  //                         ),
+  //                       );
+  //                     },
+  //                     style: TextButton.styleFrom(
+  //                       backgroundColor: const Color(0xFFFF833D),
+  //                       shape: RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.all(
+  //                           Radius.circular(deviceSizeW * 0.03),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     child: Text(
+  //                       "쇼핑 정보 기록하기",
+  //                       style: TextStyle(
+  //                         fontSize: fontSizeM,
+  //                         color: Colors.white,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Container(
+  //                   height: deviceSizeH * 0.02,
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   Future<dynamic> deleteDialog(BuildContext context, double fontSizeS,
       double fontSizeM, int i, bottomState) {
