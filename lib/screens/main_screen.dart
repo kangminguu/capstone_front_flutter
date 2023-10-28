@@ -450,7 +450,8 @@ class _MainScreenState extends State<MainScreen> {
                                             Text(
                                               NumberFormat(
                                                       '###,###,###') // 천만 단위로 넘어가면 오버플로, 백단위로 제한
-                                                  .format(diff),
+                                                  .format(
+                                                      diff > 0 ? diff : -diff),
                                               style: TextStyle(
                                                 fontSize: fontSizeS,
                                                 fontWeight: FontWeight.bold,
@@ -458,7 +459,9 @@ class _MainScreenState extends State<MainScreen> {
                                               ),
                                             ),
                                             Text(
-                                              "원 을 더 소비했어요.",
+                                              diff > 0
+                                                  ? "원 을 더 소비했어요."
+                                                  : "원 을 덜 소비했어요.",
                                               style: TextStyle(
                                                 fontSize: fontSizeS,
                                                 color: const Color(0xFF999999),
