@@ -868,7 +868,9 @@ class _MainScreenState extends State<MainScreen> {
                                                 alignment: Alignment.centerLeft,
                                                 width: deviceSizeW * 0.2,
                                                 child: Text(
-                                                  isEmpty ? "-" : categoryEtc,
+                                                  bought[3] == "0"
+                                                      ? "-"
+                                                      : categoryEtc,
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,
                                                     color:
@@ -882,8 +884,8 @@ class _MainScreenState extends State<MainScreen> {
                                                     Alignment.centerRight,
                                                 width: deviceSizeW * 0.1,
                                                 child: Text(
-                                                  isEmpty
-                                                      ? "0회"
+                                                  bought[3] == "0"
+                                                      ? "-"
                                                       : bought[3] + "회",
                                                   style: TextStyle(
                                                     fontSize: fontSizeM,

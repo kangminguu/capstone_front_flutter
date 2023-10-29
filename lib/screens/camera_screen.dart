@@ -323,6 +323,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                 ),
                                 SizedBox(
                                   // color: Colors.green,
+                                  // 최근상품이 위로 향하도록
                                   height: deviceSizeH * 0.08,
                                   width: deviceSizeW * 0.9,
                                   child: Row(
