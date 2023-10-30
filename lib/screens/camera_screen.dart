@@ -33,9 +33,9 @@ class _CameraScreenState extends State<CameraScreen> {
   late double deviceSizeH;
   dynamic result_dic = {};
   dynamic result = {};
-  dynamic recommand = {};
-  String recommandProduct = "";
-  String recommandAddress = "";
+  List recommand = [];
+  int recommandInt = 0;
+
   bool showHelpPage = false;
   bool showRecoPage = false;
 
@@ -117,9 +117,12 @@ class _CameraScreenState extends State<CameraScreen> {
             result_dic = await network.Detection(image.planes[0].bytes,
                 image.planes[1].bytes, image.planes[2].bytes, result);
             result = result_dic['result'];
-            recommand = result_dic['recommand'];
-            recommandAddress = recommand['ImageAddress'];
-            recommandProduct = recommand['product_name'];
+
+            if (recommand.toString() != result_dic['recommand'].toString()) {
+              print("바뀜");
+              recommand = result_dic['recommand'];
+              recommandInt = 0;
+            }
 
             for (int i = 0; i < result['product_name'].length; i += 1) {
               if (product_name.contains(result['product_name'][i]) == false) {
@@ -143,6 +146,7 @@ class _CameraScreenState extends State<CameraScreen> {
               product_total.add(total);
             }
 
+            showRecoPage = recommand.isEmpty ? false : true;
             setState(() {});
           }
         },
@@ -204,9 +208,7 @@ class _CameraScreenState extends State<CameraScreen> {
               children: [
                 GestureDetector(
                   onDoubleTap: () {
-                    setState(() {
-                      showRecoPage = true;
-                    });
+                    setState(() {});
                   },
                   child: Container(
                     alignment: Alignment.bottomCenter,
@@ -407,7 +409,10 @@ class _CameraScreenState extends State<CameraScreen> {
                                               child: Text(
                                                 (product_count.isEmpty)
                                                     ? ""
-                                                    : product_count[0]
+                                                    : product_count[
+                                                            product_count
+                                                                    .length -
+                                                                1]
                                                         .toString(),
                                                 style: TextStyle(
                                                   fontSize: fontSizeM,
@@ -611,7 +616,9 @@ class _CameraScreenState extends State<CameraScreen> {
                       ? GestureDetector(
                           onTap: () {
                             setState(() {
-                              showRecoPage = false;
+                              (recommandInt + 1 < recommand.length)
+                                  ? recommandInt += 1
+                                  : recommandInt = 0;
                             });
                           },
                           child: Container(
@@ -638,9 +645,8 @@ class _CameraScreenState extends State<CameraScreen> {
                                           Radius.circular(deviceSizeW * 0.03),
                                         ),
                                         child: Image.network(
-                                          recommandAddress.isEmpty
-                                              ? 'https://sitem.ssgcdn.com/42/51/26/item/1000017265142_i1_1100.jpg'
-                                              : recommand['ImageAddress'],
+                                          recommand[recommandInt]
+                                              ['ImageAddress'],
                                           fit: BoxFit.fill,
                                           height: deviceSizeW * 0.15,
                                           width: deviceSizeW * 0.15,
@@ -686,9 +692,8 @@ class _CameraScreenState extends State<CameraScreen> {
                                               height: deviceSizeH * 0.05,
                                               width: deviceSizeW * 0.5,
                                               child: Text(
-                                                recommandAddress.isEmpty
-                                                    ? "하리보 골드"
-                                                    : recommand['product_name'],
+                                                recommand[recommandInt]
+                                                    ['product_name'],
                                                 style: TextStyle(
                                                   fontSize: fontSizeM,
                                                   fontWeight: FontWeight.bold,
