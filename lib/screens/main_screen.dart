@@ -459,10 +459,27 @@ class _MainScreenState extends State<MainScreen> {
                                               ),
                                             ),
                                             Text(
-                                              diff > 0
-                                                  ? "원 을 더 소비했어요."
-                                                  : "원 을 덜 소비했어요.",
+                                              "원을 ",
                                               style: TextStyle(
+                                                fontSize: fontSizeS,
+                                                color: const Color(0xFF999999),
+                                              ),
+                                            ),
+                                            Text(
+                                              diff > 0 ? "더" : "덜",
+                                              style: TextStyle(
+                                                fontSize: fontSizeS,
+                                                fontWeight: FontWeight.bold,
+                                                height: 0.84,
+                                                color: diff > 0
+                                                    ? const Color(0xFFF57C75)
+                                                    : const Color(0xFF5096FF),
+                                              ),
+                                            ),
+                                            Text(
+                                              " 소비했어요.",
+                                              style: TextStyle(
+                                                height: 1,
                                                 fontSize: fontSizeS,
                                                 color: const Color(0xFF999999),
                                               ),
