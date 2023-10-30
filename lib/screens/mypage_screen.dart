@@ -583,15 +583,12 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         child: TextButton(
                           onPressed: () {
                             storage.delete(key: 'login');
-                            Navigator.pop(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const MyPageScreen()),
-                            );
-                            Navigator.push(
+
+                            Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => const FirstScreen()),
+                              ((route) => false),
                             );
                           },
                           style: TextButton.styleFrom(
@@ -805,15 +802,11 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             result = await deleteUser(email);
                             if (result) {
                               storage.delete(key: 'login');
-                              Navigator.pop(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const MyPageScreen()),
-                              );
-                              Navigator.push(
+                              Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => const FirstScreen()),
+                                ((route) => false),
                               );
                             }
                           },
